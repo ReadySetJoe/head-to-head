@@ -1,0 +1,8 @@
+type Query {
+  helloWorldQuery: String
+  printMessage(message: String!): String
+}
+
+type Mutation {
+  helloWorldMutation: String
+}
