@@ -1,0 +1,8 @@
+query GetTournaments {
+  getTournaments {
+    id
+    slug
+    name
+    image
+  }
+}

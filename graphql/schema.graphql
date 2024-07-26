@@ -1,8 +1,48 @@
+type Tournament {
+  id: Int!
+  slug: String!
+  name: String!
+  image: String
+  startAt: String
+  events: [Event]
+}
+
+type Event {
+  id: Int!
+  name: String!
+  image: String
+}
+
+type Entrant {
+  id: Int!
+  name: String!
+}
+
+type Matchup {
+  entrant1: Entrant
+  entrant2: Entrant
+  score1: Int
+  score2: Int
+}
+
+input AddTournamentInput {
+  slug: String!
+  eventIds: [Int!]!
+}
+
+input GetMatchupInput {
+  eventIds: [Int!]
+  entrantId1: Int
+  entrantId2: Int
+}
+
 type Query {
-  helloWorldQuery: String
-  printMessage(message: String!): String
+  fetchStartGGTournament(slug: String!): Tournament
+  getEntrants: [Entrant]
+  getMatchup(input: GetMatchupInput!): Matchup
+  getTournaments: [Tournament]
 }
 
 type Mutation {
-  helloWorldMutation: String
+  addTournament(input: AddTournamentInput!): Tournament
 }

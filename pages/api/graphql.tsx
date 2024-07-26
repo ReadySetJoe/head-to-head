@@ -36,7 +36,7 @@ const handler = startServerAndCreateNextHandler(apolloServer, {
     req,
     res,
     user: await getLoggedInUser(req, res, prisma),
-    models: prisma,
+    prisma,
   }),
 });
 

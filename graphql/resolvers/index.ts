@@ -1,17 +1,18 @@
 import { Resolvers } from '../../generated/resolvers-types';
-import {
-  helloWorldMutation,
-  helloWorldQuery,
-  printMessage,
-} from './hello-world';
+import { getEntrants } from './entrant';
+import { getMatchup } from './matchup';
+import { fetchStartGGTournament } from './start-gg';
+import { addTournament, getTournaments } from './tournament';
 
 const resolvers: Resolvers = {
   Query: {
-    helloWorldQuery,
-    printMessage,
+    fetchStartGGTournament,
+    getEntrants,
+    getMatchup,
+    getTournaments,
   },
   Mutation: {
-    helloWorldMutation,
+    addTournament,
   },
 };
 

@@ -1,0 +1,6 @@
+query GetMatchup($input: GetMatchupInput!) {
+  getMatchup(input: $input) {
+    score1
+    score2
+  }
+}

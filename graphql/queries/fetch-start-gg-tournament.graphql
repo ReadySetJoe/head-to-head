@@ -1,0 +1,14 @@
+query FetchStartGGTournament($slug: String!) {
+  fetchStartGGTournament(slug: $slug) {
+    id
+    name
+    slug
+    image
+    startAt
+    events {
+      id
+      name
+      image
+    }
+  }
+}

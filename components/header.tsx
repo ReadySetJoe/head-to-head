@@ -28,6 +28,14 @@ const Header = () => {
       label: 'Home',
       href: '/',
     },
+    {
+      label: 'Head to head',
+      href: '/head-to-head',
+    },
+    {
+      label: 'Add Tournament',
+      href: '/tournaments/add',
+    },
   ];
 
   const logo = (

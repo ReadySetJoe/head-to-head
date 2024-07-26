@@ -1,0 +1,5 @@
+mutation AddTournament($input: AddTournamentInput!) {
+  addTournament(input: $input) {
+    id
+  }
+}

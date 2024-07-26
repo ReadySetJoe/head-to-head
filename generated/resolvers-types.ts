@@ -16,20 +16,74 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type AddTournamentInput = {
+  eventIds: Array<Scalars['Int']['input']>;
+  slug: Scalars['String']['input'];
+};
+
+export type Entrant = {
+  __typename?: 'Entrant';
+  id: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+};
+
+export type Event = {
+  __typename?: 'Event';
+  id: Scalars['Int']['output'];
+  image?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+};
+
+export type GetMatchupInput = {
+  entrantId1?: InputMaybe<Scalars['Int']['input']>;
+  entrantId2?: InputMaybe<Scalars['Int']['input']>;
+  eventIds?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+export type Matchup = {
+  __typename?: 'Matchup';
+  entrant1?: Maybe<Entrant>;
+  entrant2?: Maybe<Entrant>;
+  score1?: Maybe<Scalars['Int']['output']>;
+  score2?: Maybe<Scalars['Int']['output']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  helloWorldMutation?: Maybe<Scalars['String']['output']>;
+  addTournament?: Maybe<Tournament>;
+};
+
+
+export type MutationAddTournamentArgs = {
+  input: AddTournamentInput;
 };
 
 export type Query = {
   __typename?: 'Query';
-  helloWorldQuery?: Maybe<Scalars['String']['output']>;
-  printMessage?: Maybe<Scalars['String']['output']>;
+  fetchStartGGTournament?: Maybe<Tournament>;
+  getEntrants?: Maybe<Array<Maybe<Entrant>>>;
+  getMatchup?: Maybe<Matchup>;
+  getTournaments?: Maybe<Array<Maybe<Tournament>>>;
 };
 
 
-export type QueryPrintMessageArgs = {
-  message: Scalars['String']['input'];
+export type QueryFetchStartGgTournamentArgs = {
+  slug: Scalars['String']['input'];
+};
+
+
+export type QueryGetMatchupArgs = {
+  input: GetMatchupInput;
+};
+
+export type Tournament = {
+  __typename?: 'Tournament';
+  events?: Maybe<Array<Maybe<Event>>>;
+  id: Scalars['Int']['output'];
+  image?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  slug: Scalars['String']['output'];
+  startAt?: Maybe<Scalars['String']['output']>;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -104,31 +158,82 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
+  AddTournamentInput: AddTournamentInput;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  Entrant: ResolverTypeWrapper<Entrant>;
+  Event: ResolverTypeWrapper<Event>;
+  GetMatchupInput: GetMatchupInput;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  Matchup: ResolverTypeWrapper<Matchup>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Tournament: ResolverTypeWrapper<Tournament>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
+  AddTournamentInput: AddTournamentInput;
   Boolean: Scalars['Boolean']['output'];
+  Entrant: Entrant;
+  Event: Event;
+  GetMatchupInput: GetMatchupInput;
+  Int: Scalars['Int']['output'];
+  Matchup: Matchup;
   Mutation: {};
   Query: {};
   String: Scalars['String']['output'];
+  Tournament: Tournament;
+}>;
+
+export type EntrantResolvers<ContextType = any, ParentType extends ResolversParentTypes['Entrant'] = ResolversParentTypes['Entrant']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type EventResolvers<ContextType = any, ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type MatchupResolvers<ContextType = any, ParentType extends ResolversParentTypes['Matchup'] = ResolversParentTypes['Matchup']> = ResolversObject<{
+  entrant1?: Resolver<Maybe<ResolversTypes['Entrant']>, ParentType, ContextType>;
+  entrant2?: Resolver<Maybe<ResolversTypes['Entrant']>, ParentType, ContextType>;
+  score1?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  score2?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  helloWorldMutation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  addTournament?: Resolver<Maybe<ResolversTypes['Tournament']>, ParentType, ContextType, RequireFields<MutationAddTournamentArgs, 'input'>>;
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  helloWorldQuery?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  printMessage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<QueryPrintMessageArgs, 'message'>>;
+  fetchStartGGTournament?: Resolver<Maybe<ResolversTypes['Tournament']>, ParentType, ContextType, RequireFields<QueryFetchStartGgTournamentArgs, 'slug'>>;
+  getEntrants?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entrant']>>>, ParentType, ContextType>;
+  getMatchup?: Resolver<Maybe<ResolversTypes['Matchup']>, ParentType, ContextType, RequireFields<QueryGetMatchupArgs, 'input'>>;
+  getTournaments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tournament']>>>, ParentType, ContextType>;
+}>;
+
+export type TournamentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tournament'] = ResolversParentTypes['Tournament']> = ResolversObject<{
+  events?: Resolver<Maybe<Array<Maybe<ResolversTypes['Event']>>>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  startAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
+  Entrant?: EntrantResolvers<ContextType>;
+  Event?: EventResolvers<ContextType>;
+  Matchup?: MatchupResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Tournament?: TournamentResolvers<ContextType>;
 }>;
 

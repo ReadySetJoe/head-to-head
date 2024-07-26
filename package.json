@@ -1,7 +1,7 @@
 {
-  "name": "default-app",
+  "name": "head-to-head",
   "version": "1.0.0",
-  "description": "a default app",
+  "description": "for measuring and seeding at tournaments",
   "scripts": {
     "build": "next build",
     "dev": "next dev",

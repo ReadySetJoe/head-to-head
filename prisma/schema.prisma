@@ -51,3 +51,40 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model Tournament {
+  id     Int     @id
+  slug   String  @unique
+  name   String
+  image  String?
+  events Event[]
+}
+
+model Event {
+  id           Int        @id
+  name         String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  tournamentId Int
+  videogame    Videogame  @relation(fields: [videogameId], references: [id])
+  videogameId  Int
+  sets         Set[]
+}
+
+model Videogame {
+  id    Int     @id
+  name  String
+  Event Event[]
+}
+
+model Set {
+  id       Int    @id @default(autoincrement())
+  Event    Event? @relation(fields: [eventId], references: [id])
+  eventId  Int?
+  winnerId Int
+  loserId  Int
+}
+
+model Entrant {
+  id   Int    @id @default(autoincrement())
+  name String
+}
