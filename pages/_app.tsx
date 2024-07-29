@@ -11,7 +11,7 @@ import React from 'react';
 import { ApolloProvider } from '@apollo/client';
 import { AppBar, Container } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import Footer from '../components/footer';
 import Header from '../components/header';
@@ -36,7 +36,7 @@ export default function App({
   return (
     <ApolloProvider client={client}>
       <Head>
-        <title>Head to Head</title>
+        <title>head2head</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SessionProvider session={session}>
