@@ -2,6 +2,7 @@ import {
   MutationResolvers,
   QueryResolvers,
 } from '../../generated/resolvers-types';
+import prisma from '../../lib/prisma';
 
 type TournamentQueryResponse = {
   id: number;
