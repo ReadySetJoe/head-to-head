@@ -58,17 +58,6 @@ const HeadToHead = () => {
         <Autocomplete
           options={entrantsData?.getEntrants.filter(o => o.id !== id1)}
           getOptionLabel={option => option.name}
-          // renderOption={(_props, option) => (
-          //   <Stack direction="row" alignItems="center" spacing={2}>
-          //     <img
-          //       src={option.image}
-          //       alt={option.name}
-          //       width={24}
-          //       height={24}
-          //     />
-          //     <Typography>{option.name}</Typography>
-          //   </Stack>
-          // )}
           onChange={(_, value) => setId2(value?.id)}
           renderInput={params => <TextField {...params} label="Player 2" />}
           fullWidth
