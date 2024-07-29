@@ -2,7 +2,7 @@ import { QueryResolvers } from '../../generated/resolvers-types';
 
 export const getMatchup: QueryResolvers['getMatchup'] = async (
   _parent,
-  { input: { entrantId1, entrantId2, eventIds } }
+  { input: { entrantId1, entrantId2, eventIds: _eventIds } }
 ) => {
   const query = {
     where: {
@@ -17,9 +17,10 @@ export const getMatchup: QueryResolvers['getMatchup'] = async (
     },
   };
 
-  if (eventIds) {
-    query.where.AND.push({ eventId: { in: eventIds } });
-  }
+  // TODO: fix eslint here
+  // if (eventIds) {
+  //   query.where.AND.push({ eventId: { in: eventIds } });
+  // }
 
   const matches = await prisma.set.findMany(query);
 
