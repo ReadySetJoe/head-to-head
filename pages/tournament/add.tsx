@@ -95,7 +95,13 @@ const AddTournamentPage: React.FC = () => {
             <Typography>Select events:</Typography>
             <Stack spacing={2}>
               {tournament.events.map(event => (
-                <Stack spacing={2} direction="row" flex={1} alignItems="center">
+                <Stack
+                  key={event.id.toString()}
+                  spacing={2}
+                  direction="row"
+                  flex={1}
+                  alignItems="center"
+                >
                   {/* TODO: Add checkbox to only select specific events */}
                   <img src={event.image} alt={event.name} width="50rem" />
                   <Typography>{event.name}</Typography>

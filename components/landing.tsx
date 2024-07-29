@@ -17,7 +17,13 @@ const Landing = () => {
           <Typography>Loading...</Typography>
         ) : (
           data?.getTournaments.map(tournament => (
-            <Stack spacing={2} direction="row" flex={1} alignItems="center">
+            <Stack
+              key={tournament.id.toString()}
+              spacing={2}
+              direction="row"
+              flex={1}
+              alignItems="center"
+            >
               <img src={tournament.image} alt={tournament.name} width="50rem" />
               <Typography>{tournament.name}</Typography>
             </Stack>
