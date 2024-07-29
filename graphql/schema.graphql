@@ -15,7 +15,10 @@ type Event {
 
 type Entrant {
   id: Int!
+  slug: String!
   name: String!
+  image: String
+  tournaments: [Tournament]
 }
 
 type Matchup {
@@ -25,9 +28,13 @@ type Matchup {
   score2: Int
 }
 
+input AddEntrantInput {
+  slug: String!
+}
+
 input AddTournamentInput {
   slug: String!
-  eventIds: [Int!]!
+  eventIds: [Int!]
 }
 
 input GetMatchupInput {
@@ -38,11 +45,13 @@ input GetMatchupInput {
 
 type Query {
   fetchStartGGTournament(slug: String!): Tournament
+  fetchStartGGUser(slug: String!): Entrant
   getEntrants: [Entrant]
   getMatchup(input: GetMatchupInput!): Matchup
   getTournaments: [Tournament]
 }
 
 type Mutation {
+  addEntrant(input: AddEntrantInput!): Entrant
   addTournament(input: AddTournamentInput!): Tournament
 }

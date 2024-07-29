@@ -13,9 +13,11 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+    "mutation AddEntrant($input: AddEntrantInput!) {\n  addEntrant(input: $input) {\n    id\n  }\n}": types.AddEntrantDocument,
     "mutation AddTournament($input: AddTournamentInput!) {\n  addTournament(input: $input) {\n    id\n  }\n}": types.AddTournamentDocument,
     "query FetchStartGGTournament($slug: String!) {\n  fetchStartGGTournament(slug: $slug) {\n    id\n    name\n    slug\n    image\n    startAt\n    events {\n      id\n      name\n      image\n    }\n  }\n}": types.FetchStartGgTournamentDocument,
-    "query GetEntrants {\n  getEntrants {\n    id\n    name\n  }\n}": types.GetEntrantsDocument,
+    "query FetchStartGGUser($slug: String!) {\n  fetchStartGGUser(slug: $slug) {\n    id\n    name\n    slug\n    image\n    tournaments {\n      id\n      name\n      slug\n    }\n  }\n}": types.FetchStartGgUserDocument,
+    "query GetEntrants {\n  getEntrants {\n    id\n    name\n    image\n  }\n}": types.GetEntrantsDocument,
     "query GetMatchup($input: GetMatchupInput!) {\n  getMatchup(input: $input) {\n    score1\n    score2\n  }\n}": types.GetMatchupDocument,
     "query GetTournaments {\n  getTournaments {\n    id\n    slug\n    name\n    image\n  }\n}": types.GetTournamentsDocument,
 };
@@ -37,6 +39,10 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "mutation AddEntrant($input: AddEntrantInput!) {\n  addEntrant(input: $input) {\n    id\n  }\n}"): (typeof documents)["mutation AddEntrant($input: AddEntrantInput!) {\n  addEntrant(input: $input) {\n    id\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "mutation AddTournament($input: AddTournamentInput!) {\n  addTournament(input: $input) {\n    id\n  }\n}"): (typeof documents)["mutation AddTournament($input: AddTournamentInput!) {\n  addTournament(input: $input) {\n    id\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -45,7 +51,11 @@ export function graphql(source: "query FetchStartGGTournament($slug: String!) {\
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query GetEntrants {\n  getEntrants {\n    id\n    name\n  }\n}"): (typeof documents)["query GetEntrants {\n  getEntrants {\n    id\n    name\n  }\n}"];
+export function graphql(source: "query FetchStartGGUser($slug: String!) {\n  fetchStartGGUser(slug: $slug) {\n    id\n    name\n    slug\n    image\n    tournaments {\n      id\n      name\n      slug\n    }\n  }\n}"): (typeof documents)["query FetchStartGGUser($slug: String!) {\n  fetchStartGGUser(slug: $slug) {\n    id\n    name\n    slug\n    image\n    tournaments {\n      id\n      name\n      slug\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query GetEntrants {\n  getEntrants {\n    id\n    name\n    image\n  }\n}"): (typeof documents)["query GetEntrants {\n  getEntrants {\n    id\n    name\n    image\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

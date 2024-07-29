@@ -20,27 +20,20 @@ type TournamentQueryResponse = {
   }[];
 };
 
-type EventSetsQueryResponse = {
+type UserQueryResponse = {
   id: number;
-  name: string;
-  sets: {
-    pageInfo: {
-      total: number;
-    };
+  slug: string;
+  player: {
+    gamerTag: string;
+  };
+  images: {
+    url: string;
+  }[];
+  tournaments: {
     nodes: {
       id: number;
-      round: number;
-      fullRoundText: string;
-      winnerId: number;
-      completedAt: number;
-      displayScore: string;
-      slots: {
-        id: string;
-        entrant: {
-          id: number;
-          name: string;
-        };
-      }[];
+      name: string;
+      slug: string;
     }[];
   };
 };
@@ -101,50 +94,52 @@ export const fetchStartGGTournament: QueryResolvers['fetchStartGGTournament'] =
     };
   };
 
-export const fetchStartGGEvent = async (
-  _parent: any,
-  { eventId, page, perPage }: { eventId: number; page: number; perPage: number }
+export const fetchStartGGUser: QueryResolvers['fetchStartGGUser'] = async (
+  _parent,
+  { slug }
 ) => {
-  const eventSetsBody = JSON.stringify({
+  const userBody = JSON.stringify({
     query: `
-      query EventSets($eventId: Int!, $page: Int!, $perPage: Int!) {
-        event(id: $eventId) {
+      query PlayerQuery($slug: String) {
+        user(slug: $slug) {
           id
-          name
-          sets(query: { page: $page, perPage: $perPage }) {
-            pageInfo {
-              total
-            }
+          slug
+          player {
+            gamerTag
+          }
+          images {
+            url
+          }
+          tournaments(query: { perPage: 500 }) {
             nodes {
               id
-              round
-              fullRoundText
-              winnerId
-              completedAt
-              displayScore
-              slots {
-                id
-                entrant {
-                  id
-                  name
-                }
-              }
+              name
+              slug
             }
           }
         }
       }
-  `,
-    variables: { eventId, page, perPage },
+    `,
+    variables: { slug },
   });
 
-  const eventSetsRes = await fetch('https://api.start.gg/gql/alpha', {
+  const userRes = await fetch('https://api.start.gg/gql/alpha', {
     method: 'POST',
     headers,
-    body: eventSetsBody,
+    body: userBody,
   });
 
-  const event = (await eventSetsRes.json()).data
-    .event as EventSetsQueryResponse;
+  const user = (await userRes.json()).data.user as UserQueryResponse;
 
-  return { event };
+  return {
+    id: user.id,
+    slug: user.slug,
+    name: user.player.gamerTag,
+    image: user.images[0].url,
+    tournaments: user.tournaments.nodes.map(node => ({
+      id: node.id,
+      name: node.name,
+      slug: node.slug,
+    })),
+  };
 };

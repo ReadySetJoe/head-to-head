@@ -29,6 +29,27 @@ const HeadToHead = () => {
         <Autocomplete
           options={entrantsData?.getEntrants.filter(o => o.id !== id2)}
           getOptionLabel={option => option.name}
+          // renderOption={(_props, option) => (
+          //   <Stack direction="row" alignItems="center" spacing={2}>
+          //     <img
+          //       src={option.image}
+          //       alt={option.name}
+          //       width={24}
+          //       height={24}
+          //     />
+          //     <Typography>{option.name}</Typography>
+          //   </Stack>
+          // )}
+          filterOptions={(options, params) => {
+            const filtered = options.filter(
+              o =>
+                o.name
+                  .toLowerCase()
+                  .indexOf(params.inputValue.toLowerCase()) !== -1
+            );
+
+            return filtered;
+          }}
           onChange={(_, value) => setId1(value?.id)}
           renderInput={params => <TextField {...params} label="Player 1" />}
           fullWidth
@@ -37,6 +58,17 @@ const HeadToHead = () => {
         <Autocomplete
           options={entrantsData?.getEntrants.filter(o => o.id !== id1)}
           getOptionLabel={option => option.name}
+          // renderOption={(_props, option) => (
+          //   <Stack direction="row" alignItems="center" spacing={2}>
+          //     <img
+          //       src={option.image}
+          //       alt={option.name}
+          //       width={24}
+          //       height={24}
+          //     />
+          //     <Typography>{option.name}</Typography>
+          //   </Stack>
+          // )}
           onChange={(_, value) => setId2(value?.id)}
           renderInput={params => <TextField {...params} label="Player 2" />}
           fullWidth

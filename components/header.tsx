@@ -29,12 +29,16 @@ const Header = () => {
       href: '/',
     },
     {
-      label: 'Head to head',
+      label: 'head2head',
       href: '/head-to-head',
     },
     {
-      label: 'Add Tournament',
-      href: '/tournaments/add',
+      label: '+Tournament',
+      href: '/tournament/add',
+    },
+    {
+      label: '+Player',
+      href: '/player/add',
     },
   ];
 
@@ -50,7 +54,7 @@ const Header = () => {
         letterSpacing: '.3rem',
       }}
     >
-      default
+      head2head
     </Typography>
   );
 

@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Account {
@@ -54,7 +55,7 @@ model VerificationToken {
 
 model Tournament {
   id     Int     @id
-  slug   String  @unique
+  slug   String
   name   String
   image  String?
   events Event[]
@@ -77,7 +78,7 @@ model Videogame {
 }
 
 model Set {
-  id       Int    @id @default(autoincrement())
+  id       Int    @id
   Event    Event? @relation(fields: [eventId], references: [id])
   eventId  Int?
   winnerId Int
@@ -85,6 +86,8 @@ model Set {
 }
 
 model Entrant {
-  id   Int    @id @default(autoincrement())
-  name String
+  id    Int     @id
+  name  String
+  slug  String
+  image String?
 }

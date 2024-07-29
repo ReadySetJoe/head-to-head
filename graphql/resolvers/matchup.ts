@@ -20,6 +20,7 @@ export const getMatchup: QueryResolvers['getMatchup'] = async (
   if (eventIds) {
     query.where.AND.push({ eventId: { in: eventIds } });
   }
+
   const matches = await prisma.set.findMany(query);
 
   return {

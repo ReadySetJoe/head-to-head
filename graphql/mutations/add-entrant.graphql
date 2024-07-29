@@ -1,0 +1,5 @@
+mutation AddEntrant($input: AddEntrantInput!) {
+  addEntrant(input: $input) {
+    id
+  }
+}

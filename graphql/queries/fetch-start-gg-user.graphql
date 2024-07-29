@@ -1,0 +1,13 @@
+query FetchStartGGUser($slug: String!) {
+  fetchStartGGUser(slug: $slug) {
+    id
+    name
+    slug
+    image
+    tournaments {
+      id
+      name
+      slug
+    }
+  }
+}
