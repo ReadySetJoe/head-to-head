@@ -4,11 +4,12 @@
   "description": "for measuring and seeding at tournaments",
   "scripts": {
     "build": "prisma generate && next build",
-    "dev": "next dev",
-    "start": "next start",
     "codegen": "graphql-codegen --config codegen.ts",
+    "dev": "next dev",
     "lint": "next lint",
-    "migrate": "prisma migrate dev"
+    "migrate": "prisma migrate dev",
+    "postinstall": "prisma generate",
+    "start": "next start"
   },
   "dependencies": {
     "@apollo/client": "^3.8.3",
