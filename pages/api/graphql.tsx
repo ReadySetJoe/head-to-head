@@ -2,12 +2,14 @@ import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { getServerSession } from 'next-auth';
 import fs from 'node:fs';
+import path from 'path';
 import resolvers from '../../graphql/resolvers';
 import prisma from '../../lib/prisma';
 import allowCors from '../../utils/cors';
 import { authOptions } from './auth/[...nextauth]';
 
-const typeDefs = fs.readFileSync('graphql/schema.graphql', 'utf8');
+const schemaPath = path.join(process.cwd(), 'graphql/schema.graphql');
+const typeDefs = fs.readFileSync(schemaPath, 'utf8');
 
 const apolloServer = new ApolloServer({
   typeDefs,
