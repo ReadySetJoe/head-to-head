@@ -28,6 +28,11 @@ type Matchup {
   score2: Int
 }
 
+type Videogame {
+  id: Int!
+  name: String!
+}
+
 input AddEntrantInput {
   slug: String!
 }
@@ -38,9 +43,10 @@ input AddTournamentInput {
 }
 
 input GetMatchupInput {
-  eventIds: [Int!]
-  entrantId1: Int
-  entrantId2: Int
+  entrantId1: Int!
+  entrantId2: Int!
+  startAfter: String
+  videogameId: Int
 }
 
 type Query {
@@ -49,6 +55,7 @@ type Query {
   getEntrants: [Entrant]
   getMatchup(input: GetMatchupInput!): Matchup
   getTournaments: [Tournament]
+  getVideogames: [Videogame]
 }
 
 type Mutation {

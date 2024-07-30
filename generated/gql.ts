@@ -20,6 +20,7 @@ const documents = {
     "query GetEntrants {\n  getEntrants {\n    id\n    name\n    image\n  }\n}": types.GetEntrantsDocument,
     "query GetMatchup($input: GetMatchupInput!) {\n  getMatchup(input: $input) {\n    score1\n    score2\n  }\n}": types.GetMatchupDocument,
     "query GetTournaments {\n  getTournaments {\n    id\n    slug\n    name\n    image\n  }\n}": types.GetTournamentsDocument,
+    "query GetVideogames {\n  getVideogames {\n    id\n    name\n  }\n}": types.GetVideogamesDocument,
 };
 
 /**
@@ -64,6 +65,10 @@ export function graphql(source: "query GetMatchup($input: GetMatchupInput!) {\n 
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query GetTournaments {\n  getTournaments {\n    id\n    slug\n    name\n    image\n  }\n}"): (typeof documents)["query GetTournaments {\n  getTournaments {\n    id\n    slug\n    name\n    image\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query GetVideogames {\n  getVideogames {\n    id\n    name\n  }\n}"): (typeof documents)["query GetVideogames {\n  getVideogames {\n    id\n    name\n  }\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

@@ -1,28 +1,38 @@
 import { QueryResolvers } from '../../generated/resolvers-types';
 
+type MatchupSetsQuery = {
+  winnerId: { in: number[] };
+  loserId: { in: number[] };
+  Event?: { videogameId?: number; Tournament?: { startAt: { gte: string } } };
+};
+
 export const getMatchup: QueryResolvers['getMatchup'] = async (
   _parent,
-  { input: { entrantId1, entrantId2, eventIds: _eventIds } }
+  { input: { entrantId1, entrantId2, startAfter, videogameId } },
+  { prisma }
 ) => {
-  const query = {
-    where: {
-      AND: [
-        {
-          OR: [
-            { winnerId: entrantId1, loserId: entrantId2 },
-            { winnerId: entrantId2, loserId: entrantId1 },
-          ],
-        },
-      ],
-    },
+  const where: MatchupSetsQuery = {
+    winnerId: { in: [entrantId1, entrantId2] },
+    loserId: { in: [entrantId1, entrantId2] },
   };
 
-  // TODO: fix eslint here
-  // if (eventIds) {
-  //   query.where.AND.push({ eventId: { in: eventIds } });
-  // }
+  if (startAfter) {
+    Object.assign(where, {
+      Event: {
+        Tournament: {
+          startAt: { gte: new Date(startAfter).toISOString() },
+        },
+      },
+    });
+  }
 
-  const matches = await prisma.set.findMany(query);
+  if (videogameId) {
+    Object.assign(where, { Event: { videogameId } });
+  }
+
+  const matches = await prisma.set.findMany({
+    where,
+  });
 
   return {
     entrantId1: entrantId1,

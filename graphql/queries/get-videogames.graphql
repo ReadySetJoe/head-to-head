@@ -1,0 +1,6 @@
+query GetVideogames {
+  getVideogames {
+    id
+    name
+  }
+}

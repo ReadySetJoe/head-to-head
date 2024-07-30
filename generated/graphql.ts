@@ -42,9 +42,10 @@ export type Event = {
 };
 
 export type GetMatchupInput = {
-  entrantId1?: InputMaybe<Scalars['Int']['input']>;
-  entrantId2?: InputMaybe<Scalars['Int']['input']>;
-  eventIds?: InputMaybe<Array<Scalars['Int']['input']>>;
+  entrantId1: Scalars['Int']['input'];
+  entrantId2: Scalars['Int']['input'];
+  startAfter?: InputMaybe<Scalars['String']['input']>;
+  videogameId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Matchup = {
@@ -78,6 +79,7 @@ export type Query = {
   getEntrants?: Maybe<Array<Maybe<Entrant>>>;
   getMatchup?: Maybe<Matchup>;
   getTournaments?: Maybe<Array<Maybe<Tournament>>>;
+  getVideogames?: Maybe<Array<Maybe<Videogame>>>;
 };
 
 
@@ -103,6 +105,12 @@ export type Tournament = {
   name: Scalars['String']['output'];
   slug: Scalars['String']['output'];
   startAt?: Maybe<Scalars['String']['output']>;
+};
+
+export type Videogame = {
+  __typename?: 'Videogame';
+  id: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
 };
 
 export type AddEntrantMutationVariables = Exact<{
@@ -150,6 +158,11 @@ export type GetTournamentsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetTournamentsQuery = { __typename?: 'Query', getTournaments?: Array<{ __typename?: 'Tournament', id: number, slug: string, name: string, image?: string | null } | null> | null };
 
+export type GetVideogamesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetVideogamesQuery = { __typename?: 'Query', getVideogames?: Array<{ __typename?: 'Videogame', id: number, name: string } | null> | null };
+
 
 export const AddEntrantDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddEntrant"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"AddEntrantInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addEntrant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<AddEntrantMutation, AddEntrantMutationVariables>;
 export const AddTournamentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddTournament"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"AddTournamentInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addTournament"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<AddTournamentMutation, AddTournamentMutationVariables>;
@@ -158,3 +171,4 @@ export const FetchStartGgUserDocument = {"kind":"Document","definitions":[{"kind
 export const GetEntrantsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetEntrants"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getEntrants"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"image"}}]}}]}}]} as unknown as DocumentNode<GetEntrantsQuery, GetEntrantsQueryVariables>;
 export const GetMatchupDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetMatchup"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"GetMatchupInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getMatchup"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"score1"}},{"kind":"Field","name":{"kind":"Name","value":"score2"}}]}}]}}]} as unknown as DocumentNode<GetMatchupQuery, GetMatchupQueryVariables>;
 export const GetTournamentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetTournaments"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getTournaments"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"image"}}]}}]}}]} as unknown as DocumentNode<GetTournamentsQuery, GetTournamentsQueryVariables>;
+export const GetVideogamesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetVideogames"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getVideogames"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<GetVideogamesQuery, GetVideogamesQueryVariables>;

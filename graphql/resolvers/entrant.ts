@@ -8,14 +8,16 @@ const headers = {
 
 export const getEntrants: QueryResolvers['getEntrants'] = async (
   _parent,
-  _args
+  _args,
+  { prisma }
 ) => {
   return prisma.entrant.findMany({ orderBy: { name: 'asc' } });
 };
 
 export const addEntrant: QueryResolvers['addEntrant'] = async (
   _parent,
-  { input: { slug } }
+  { input: { slug } },
+  { prisma }
 ) => {
   const userBody = JSON.stringify({
     query: `
@@ -98,7 +100,9 @@ export const addEntrant: QueryResolvers['addEntrant'] = async (
     },
   });
 
-  await Promise.all(user.tournaments.nodes.map(addTournamentToDb));
+  await Promise.all(
+    user.tournaments.nodes.map(t => addTournamentToDb(t, prisma))
+  );
 
   return entrant;
 };

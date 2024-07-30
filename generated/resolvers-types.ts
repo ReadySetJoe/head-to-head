@@ -42,9 +42,10 @@ export type Event = {
 };
 
 export type GetMatchupInput = {
-  entrantId1?: InputMaybe<Scalars['Int']['input']>;
-  entrantId2?: InputMaybe<Scalars['Int']['input']>;
-  eventIds?: InputMaybe<Array<Scalars['Int']['input']>>;
+  entrantId1: Scalars['Int']['input'];
+  entrantId2: Scalars['Int']['input'];
+  startAfter?: InputMaybe<Scalars['String']['input']>;
+  videogameId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Matchup = {
@@ -78,6 +79,7 @@ export type Query = {
   getEntrants?: Maybe<Array<Maybe<Entrant>>>;
   getMatchup?: Maybe<Matchup>;
   getTournaments?: Maybe<Array<Maybe<Tournament>>>;
+  getVideogames?: Maybe<Array<Maybe<Videogame>>>;
 };
 
 
@@ -103,6 +105,12 @@ export type Tournament = {
   name: Scalars['String']['output'];
   slug: Scalars['String']['output'];
   startAt?: Maybe<Scalars['String']['output']>;
+};
+
+export type Videogame = {
+  __typename?: 'Videogame';
+  id: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -189,6 +197,7 @@ export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Tournament: ResolverTypeWrapper<Tournament>;
+  Videogame: ResolverTypeWrapper<Videogame>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -205,6 +214,7 @@ export type ResolversParentTypes = ResolversObject<{
   Query: {};
   String: Scalars['String']['output'];
   Tournament: Tournament;
+  Videogame: Videogame;
 }>;
 
 export type EntrantResolvers<ContextType = any, ParentType extends ResolversParentTypes['Entrant'] = ResolversParentTypes['Entrant']> = ResolversObject<{
@@ -242,6 +252,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getEntrants?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entrant']>>>, ParentType, ContextType>;
   getMatchup?: Resolver<Maybe<ResolversTypes['Matchup']>, ParentType, ContextType, RequireFields<QueryGetMatchupArgs, 'input'>>;
   getTournaments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tournament']>>>, ParentType, ContextType>;
+  getVideogames?: Resolver<Maybe<Array<Maybe<ResolversTypes['Videogame']>>>, ParentType, ContextType>;
 }>;
 
 export type TournamentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tournament'] = ResolversParentTypes['Tournament']> = ResolversObject<{
@@ -254,6 +265,12 @@ export type TournamentResolvers<ContextType = any, ParentType extends ResolversP
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type VideogameResolvers<ContextType = any, ParentType extends ResolversParentTypes['Videogame'] = ResolversParentTypes['Videogame']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type Resolvers<ContextType = any> = ResolversObject<{
   Entrant?: EntrantResolvers<ContextType>;
   Event?: EventResolvers<ContextType>;
@@ -261,5 +278,6 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Tournament?: TournamentResolvers<ContextType>;
+  Videogame?: VideogameResolvers<ContextType>;
 }>;
 

@@ -55,11 +55,12 @@ model VerificationToken {
 }
 
 model Tournament {
-  id     Int     @id
-  slug   String
-  name   String
-  image  String?
-  events Event[]
+  id      Int       @id
+  slug    String
+  name    String
+  image   String?
+  events  Event[]
+  startAt DateTime?
 }
 
 model Event {
@@ -75,12 +76,13 @@ model Event {
 model Videogame {
   id    Int     @id
   name  String
-  Event Event[]
+  event Event[]
+  image String?
 }
 
 model Set {
   id       Int    @id
-  Event    Event? @relation(fields: [eventId], references: [id])
+  event    Event? @relation(fields: [eventId], references: [id])
   eventId  Int?
   winnerId Int
   loserId  Int

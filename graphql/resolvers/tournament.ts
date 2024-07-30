@@ -1,3 +1,5 @@
+import { PrismaClient } from '@prisma/client';
+import { fromUnixTime } from 'date-fns';
 import {
   MutationResolvers,
   QueryResolvers,
@@ -11,6 +13,7 @@ type TournamentQueryResponse = {
   images: {
     url: string;
   }[];
+  startAt: number;
   events: {
     id: number;
     name: string;
@@ -51,7 +54,8 @@ const headers = {
 };
 
 export const addTournamentToDb = async (
-  tournamentData: TournamentQueryResponse
+  tournamentData: TournamentQueryResponse,
+  prisma: PrismaClient
 ) => {
   const tournament = await prisma.tournament.upsert({
     where: { id: tournamentData.id },
@@ -60,12 +64,14 @@ export const addTournamentToDb = async (
       name: tournamentData.name,
       slug: tournamentData.slug,
       image: tournamentData.images[0]?.url,
+      startAt: fromUnixTime(tournamentData.startAt).toISOString(),
     },
     create: {
       id: tournamentData.id,
       slug: tournamentData.slug,
       name: tournamentData.name,
       image: tournamentData.images[0]?.url,
+      startAt: fromUnixTime(tournamentData.startAt).toISOString(),
     },
   });
 
@@ -118,8 +124,6 @@ export const addTournamentToDb = async (
             return;
           }
 
-          console.log('winner', JSON.stringify(winner, null, 2));
-
           await prisma.entrant.upsert({
             where: { id: winner.user.id },
             update: {
@@ -170,7 +174,8 @@ export const addTournamentToDb = async (
 
 export const addTournament: MutationResolvers['addTournament'] = async (
   _parent,
-  { input: { slug, eventIds } }
+  { input: { slug, eventIds } },
+  { prisma }
 ) => {
   const tournamentBody = JSON.stringify({
     query: `
@@ -182,6 +187,7 @@ export const addTournament: MutationResolvers['addTournament'] = async (
           images {
             url
           }
+          startAt
           events${
             eventIds ? `(filter: { ids: [${eventIds.join(',')}] })` : ''
           } {
@@ -231,7 +237,7 @@ export const addTournament: MutationResolvers['addTournament'] = async (
   const tournamentData = (await tournamentRes.json()).data
     .tournament as TournamentQueryResponse;
 
-  const tournament = await addTournamentToDb(tournamentData);
+  const tournament = await addTournamentToDb(tournamentData, prisma);
 
   return {
     id: tournament.id,

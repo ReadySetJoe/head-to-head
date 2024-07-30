@@ -3,6 +3,7 @@ import { addEntrant, getEntrants } from './entrant';
 import { getMatchup } from './matchup';
 import { fetchStartGGTournament, fetchStartGGUser } from './start-gg';
 import { addTournament, getTournaments } from './tournament';
+import { getVideogames } from './videogame';
 
 const resolvers: Resolvers = {
   Query: {
@@ -11,6 +12,7 @@ const resolvers: Resolvers = {
     getEntrants,
     getMatchup,
     getTournaments,
+    getVideogames,
   },
   Mutation: {
     addEntrant,
