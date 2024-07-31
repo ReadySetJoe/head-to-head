@@ -67,6 +67,13 @@ function createEntrantUpsert(entrant: EntrantData | null) {
 }
 
 function createSetUpsert(set: SetData) {
+  console.log('Creating set upsert for set:', set.id);
+
+  if (typeof set?.id !== 'number') {
+    console.log('Invalid set id:', set?.id);
+    return null;
+  }
+
   if (typeof set?.id !== 'number') {
     return null;
   }
@@ -113,8 +120,8 @@ function createSetUpsert(set: SetData) {
     };
   }
 
-  // Only return the upsert object if there's something to update or create
   if (Object.keys(update).length > 0 || Object.keys(create).length > 1) {
+    console.log('Returning valid set upsert for set:', set.id);
     return {
       where: { id: set.id },
       update,
@@ -122,10 +129,26 @@ function createSetUpsert(set: SetData) {
     };
   }
 
+  console.log('No valid updates or creates for set:', set.id);
   return null;
 }
 
 function createEventUpsert(event: EventData) {
+  console.log('Creating event upsert for event:', event.id);
+
+  const setUpserts = event.sets.nodes
+    .map(set => {
+      const setUpsert = createSetUpsert(set);
+      if (!setUpsert) {
+        console.log('Set upsert returned null for set:', set.id);
+        return null;
+      }
+      return setUpsert;
+    })
+    .filter(Boolean);
+
+  console.log(`Created ${setUpserts.length} valid set upserts`);
+
   return {
     where: { id: event.id },
     update: {
@@ -137,14 +160,7 @@ function createEventUpsert(event: EventData) {
         },
       },
       sets: {
-        upsert: event.sets.nodes
-          .map(createSetUpsert)
-          .filter(
-            setUpsert =>
-              !setUpsert ||
-              Object.keys(setUpsert.update).length > 0 ||
-              Object.keys(setUpsert.create).length > 1
-          ),
+        upsert: setUpserts,
       },
     },
     create: {
@@ -157,12 +173,15 @@ function createEventUpsert(event: EventData) {
         },
       },
       sets: {
-        create: event.sets.nodes
-          .map(createSetUpsert)
-          .filter(
-            setUpsert => !setUpsert || Object.keys(setUpsert.create).length > 1
-          )
-          .map(setUpsert => setUpsert.create),
+        create: setUpserts
+          .map(setUpsert => {
+            if (!setUpsert || !setUpsert.create) {
+              console.log('Invalid set upsert:', setUpsert);
+              return null;
+            }
+            return setUpsert.create;
+          })
+          .filter(Boolean),
       },
     },
   };
@@ -171,6 +190,10 @@ function createEventUpsert(event: EventData) {
 export async function addTournamentToDb(tournamentData: TournamentData) {
   const startAtDate = fromUnixTime(tournamentData.startAt).toISOString();
 
+  const eventUpserts = tournamentData.events
+    .map(createEventUpsert)
+    .filter(Boolean);
+
   return await prisma.tournament.upsert({
     where: { id: tournamentData.id },
     update: {
@@ -178,7 +201,7 @@ export async function addTournamentToDb(tournamentData: TournamentData) {
       slug: tournamentData.slug,
       startAt: startAtDate,
       image: tournamentData.images[0]?.url,
-      events: { upsert: tournamentData.events.map(createEventUpsert) },
+      events: { upsert: eventUpserts },
     },
     create: {
       id: tournamentData.id,
@@ -187,9 +210,7 @@ export async function addTournamentToDb(tournamentData: TournamentData) {
       image: tournamentData.images[0]?.url,
       startAt: startAtDate,
       events: {
-        create: tournamentData.events.map(
-          event => createEventUpsert(event).create
-        ),
+        create: eventUpserts.map(eventUpsert => eventUpsert.create),
       },
     },
   });

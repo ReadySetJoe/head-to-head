@@ -49,7 +49,6 @@ const Header = () => {
       component="a"
       href="/"
       sx={{
-        mr: 2,
         fontWeight: 700,
         letterSpacing: '.3rem',
       }}

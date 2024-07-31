@@ -1,17 +1,16 @@
-import { signIn, signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-
+import { Login as LoginIcon } from '@mui/icons-material';
 import {
   Avatar,
   Box,
-  Button,
   IconButton,
   Menu,
   MenuItem,
   Tooltip,
   Typography,
 } from '@mui/material';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 export default function Login() {
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -37,7 +36,11 @@ export default function Login() {
   const { data: session } = useSession();
 
   if (!session) {
-    return <Button onClick={() => signIn()}>Sign in</Button>;
+    return (
+      <IconButton onClick={() => signIn()}>
+        <LoginIcon />
+      </IconButton>
+    );
   }
 
   const avatar = session?.user?.image ? (
