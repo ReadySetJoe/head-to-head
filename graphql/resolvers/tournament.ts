@@ -132,8 +132,11 @@ export const addTournament: MutationResolvers['addTournament'] = async (
   { input: { slug } }
 ) => {
   const tournamentData = await getStartGGTournamentForDb(slug);
+  console.log('slug:', slug);
+  console.log('tournamentData.name:', tournamentData.name);
 
   const tournament = await addTournamentToDb(tournamentData);
+  console.log('tournament:', tournament);
 
   return {
     ...tournament,
