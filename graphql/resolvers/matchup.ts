@@ -18,8 +18,8 @@ export const getMatchup: QueryResolvers['getMatchup'] = async (
 
   if (startAfter) {
     Object.assign(where, {
-      Event: {
-        Tournament: {
+      event: {
+        tournament: {
           startAt: { gte: new Date(startAfter).toISOString() },
         },
       },
@@ -27,7 +27,7 @@ export const getMatchup: QueryResolvers['getMatchup'] = async (
   }
 
   if (videogameId) {
-    Object.assign(where, { Event: { videogameId } });
+    Object.assign(where, { event: { videogameId } });
   }
 
   const matches = await prisma.set.findMany({
