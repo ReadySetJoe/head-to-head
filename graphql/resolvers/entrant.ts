@@ -1,4 +1,5 @@
 import { QueryResolvers } from '../../generated/resolvers-types';
+import prisma from '../../lib/prisma';
 import { addTournamentToDb } from './tournament';
 
 const headers = {
@@ -8,16 +9,14 @@ const headers = {
 
 export const getEntrants: QueryResolvers['getEntrants'] = async (
   _parent,
-  _args,
-  { prisma }
+  _args
 ) => {
   return prisma.entrant.findMany({ orderBy: { name: 'asc' } });
 };
 
 export const addEntrant: QueryResolvers['addEntrant'] = async (
   _parent,
-  { input: { slug } },
-  { prisma }
+  { input: { slug } }
 ) => {
   const userBody = JSON.stringify({
     query: `
@@ -100,9 +99,7 @@ export const addEntrant: QueryResolvers['addEntrant'] = async (
     },
   });
 
-  await Promise.all(
-    user.tournaments.nodes.map(t => addTournamentToDb(t, prisma))
-  );
+  await Promise.all(user.tournaments.nodes.map(addTournamentToDb));
 
   return entrant;
 };

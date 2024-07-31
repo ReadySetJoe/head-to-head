@@ -1,61 +1,16 @@
-import { PrismaClient } from '@prisma/client';
 import { fromUnixTime } from 'date-fns';
 import {
   MutationResolvers,
   QueryResolvers,
 } from '../../generated/resolvers-types';
 import prisma from '../../lib/prisma';
-
-type TournamentQueryResponse = {
-  id: number;
-  name: string;
-  slug: string;
-  images: {
-    url: string;
-  }[];
-  startAt: number;
-  events: {
-    id: number;
-    name: string;
-    sets: {
-      nodes: {
-        id: number;
-        winnerId: number;
-        slots: {
-          entrant: {
-            id: number;
-            participants: {
-              id: number;
-              player: {
-                gamerTag: string;
-              };
-              user: {
-                id: number;
-                slug: string;
-                images: {
-                  url: string;
-                }[];
-              };
-            }[];
-          };
-        }[];
-      }[];
-    };
-    videogame: {
-      id: number;
-      name: string;
-    };
-  }[];
-};
-
-const headers = {
-  Authorization: `Bearer ${process.env.START_GG_API_KEY}`,
-  'Content-Type': 'application/json',
-};
+import {
+  StartGGTournamentDataForDb,
+  getStartGGTournamentForDb,
+} from '../../lib/start-gg';
 
 export const addTournamentToDb = async (
-  tournamentData: TournamentQueryResponse,
-  prisma: PrismaClient
+  tournamentData: StartGGTournamentDataForDb
 ) => {
   const tournament = await prisma.tournament.upsert({
     where: { id: tournamentData.id },
@@ -174,79 +129,22 @@ export const addTournamentToDb = async (
 
 export const addTournament: MutationResolvers['addTournament'] = async (
   _parent,
-  { input: { slug, eventIds } },
-  { prisma }
+  { input: { slug } }
 ) => {
-  const tournamentBody = JSON.stringify({
-    query: `
-      query TournamentPageHead($slug: String!) {
-        tournament(slug: $slug) {
-          id
-          slug
-          name
-          images {
-            url
-          }
-          startAt
-          events${
-            eventIds ? `(filter: { ids: [${eventIds.join(',')}] })` : ''
-          } {
-            id
-            name
-            sets {
-              nodes {
-                id
-                winnerId
-                slots {
-                  entrant {
-                    id
-                    participants {
-                      id
-                      user {
-                        id
-                        slug
-                        images {
-                          url
-                        }
-                      }
-                      player {
-                        gamerTag
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            videogame {
-              id
-              name
-            }
-          }
-        }
-      }
-    `,
-    variables: { slug },
-  });
+  const tournamentData = await getStartGGTournamentForDb(slug);
 
-  const tournamentRes = await fetch('https://api.start.gg/gql/alpha', {
-    method: 'POST',
-    headers,
-    body: tournamentBody,
-  });
-
-  const tournamentData = (await tournamentRes.json()).data
-    .tournament as TournamentQueryResponse;
-
-  const tournament = await addTournamentToDb(tournamentData, prisma);
+  const tournament = await addTournamentToDb(tournamentData);
 
   return {
-    id: tournament.id,
-    slug: tournament.slug,
-    name: tournament.name,
+    ...tournament,
+    startAt: tournament.startAt.toISOString(),
   };
 };
 
-export const getTournaments: QueryResolvers['getTournaments'] = async () => {
+export const getTournaments: QueryResolvers['getTournaments'] = async (
+  _parent,
+  _args
+) => {
   const tournaments = await prisma.tournament.findMany({
     select: {
       id: true,

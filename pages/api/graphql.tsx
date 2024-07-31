@@ -1,5 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
+import { PrismaClient } from '@prisma/client';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import fs from 'node:fs';
 import path from 'path';
@@ -16,7 +18,11 @@ const apolloServer = new ApolloServer({
   resolvers,
 });
 
-const getLoggedInUser = async (req, res, prisma) => {
+const getLoggedInUser = async (
+  req: NextApiRequest,
+  res: NextApiResponse,
+  prisma: PrismaClient
+) => {
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
     return null;
@@ -38,7 +44,6 @@ const handler = startServerAndCreateNextHandler(apolloServer, {
     req,
     res,
     user: await getLoggedInUser(req, res, prisma),
-    prisma,
   }),
 });
 

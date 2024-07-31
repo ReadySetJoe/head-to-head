@@ -1,4 +1,5 @@
 import { QueryResolvers } from '../../generated/resolvers-types';
+import prisma from '../../lib/prisma';
 
 type MatchupSetsQuery = {
   winnerId: { in: number[] };
@@ -8,8 +9,7 @@ type MatchupSetsQuery = {
 
 export const getMatchup: QueryResolvers['getMatchup'] = async (
   _parent,
-  { input: { entrantId1, entrantId2, startAfter, videogameId } },
-  { prisma }
+  { input: { entrantId1, entrantId2, startAfter, videogameId } }
 ) => {
   const where: MatchupSetsQuery = {
     winnerId: { in: [entrantId1, entrantId2] },

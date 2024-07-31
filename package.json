@@ -8,7 +8,7 @@
     "dev": "next dev",
     "lint": "next lint",
     "migrate": "prisma migrate dev",
-    "postinstall": "prisma generate",
+    "prisma": "prisma",
     "start": "next start"
   },
   "dependencies": {
