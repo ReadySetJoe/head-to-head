@@ -44,7 +44,10 @@ export default function App({
           <AppBar position="static">
             <Header />
           </AppBar>
-          <Container maxWidth="lg" sx={{ paddingTop: 5, minHeight: '100vh' }}>
+          <Container
+            maxWidth="lg"
+            sx={{ paddingTop: 5, paddingBottom: 1, minHeight: '90vh' }}
+          >
             <CssBaseline />
             <Component {...pageProps} />
           </Container>

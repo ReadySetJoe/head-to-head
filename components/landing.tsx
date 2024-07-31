@@ -8,8 +8,11 @@ const Landing = () => {
   return (
     <Stack spacing={5} paddingTop={5}>
       <Typography variant="h3">Welcome!</Typography>
-      <Button variant="contained" color="primary" href="/tournaments/add">
+      <Button variant="contained" color="primary" href="/tournament/add">
         Add a tournament
+      </Button>
+      <Button variant="contained" color="primary" href="/player/add">
+        Add a player
       </Button>
       <Typography variant="h4">Existing tournaments:</Typography>
       <Box>
