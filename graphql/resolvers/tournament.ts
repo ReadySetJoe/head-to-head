@@ -30,6 +30,8 @@ export const addTournamentToDb = async (
     },
   });
 
+  console.log('tournament db response:', tournament);
+
   await Promise.all(
     tournamentData.events.map(async event => {
       await prisma.videogame.upsert({
@@ -57,6 +59,8 @@ export const addTournamentToDb = async (
           videogameId: event.videogame.id,
         },
       });
+
+      console.log('dbEvent:', dbEvent);
 
       await Promise.all(
         event.sets.nodes.map(async set => {
