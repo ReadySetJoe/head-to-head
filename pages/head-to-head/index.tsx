@@ -22,9 +22,9 @@ import {
 
 const timeFilterOptions = [
   { value: 'all', label: 'All time' },
-  { value: subWeeks(new Date(), 3).toISOString(), label: 'Last 3 weeks' },
-  { value: subMonths(new Date(), 3).toISOString(), label: 'Last 3 months' },
   { value: subYears(new Date(), 1).toISOString(), label: 'Last year' },
+  { value: subMonths(new Date(), 3).toISOString(), label: 'Last 3 months' },
+  { value: subWeeks(new Date(), 3).toISOString(), label: 'Last 3 weeks' },
 ];
 
 const EntrantAutocomplete = ({
@@ -80,18 +80,23 @@ const HeadToHead = () => {
   return (
     <Stack spacing={4} flex={1} alignItems="center">
       <Typography variant="h4">Head to head</Typography>
-      <Stack direction="row" width="100%" spacing={4}>
+      <Stack
+        direction={{ md: 'row' }}
+        width="100%"
+        spacing={4}
+        alignItems="center"
+      >
         <EntrantAutocomplete entrants={entrants} otherId={id2} setId={setId1} />
         <Typography variant="h4">vs</Typography>
         <EntrantAutocomplete entrants={entrants} otherId={id1} setId={setId2} />
       </Stack>
       {loading && <CircularProgress />}
       {matchupData && (
-        <Stack direction="row" alignItems="center" spacing={4}>
+        <Stack direction="row" alignItems="center" spacing={2}>
           <Avatar
             sx={{
-              width: 100,
-              height: 100,
+              width: 75,
+              height: 75,
             }}
             src={entrants.find(o => o.id === id1)?.image}
           />
@@ -100,8 +105,8 @@ const HeadToHead = () => {
           </Typography>
           <Avatar
             sx={{
-              width: 100,
-              height: 100,
+              width: 75,
+              height: 75,
             }}
             src={entrants.find(o => o.id === id2)?.image}
           />

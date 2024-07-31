@@ -4,144 +4,212 @@ import {
   QueryResolvers,
 } from '../../generated/resolvers-types';
 import prisma from '../../lib/prisma';
-import {
-  StartGGTournamentDataForDb,
-  getStartGGTournamentForDb,
-} from '../../lib/start-gg';
+import { getStartGGTournamentForDb } from '../../lib/start-gg';
 
-export const addTournamentToDb = async (
-  tournamentData: StartGGTournamentDataForDb
-) => {
-  const tournament = await prisma.tournament.upsert({
+interface TournamentData {
+  id: number;
+  name: string;
+  slug: string;
+  startAt: number;
+  images: { url: string }[];
+  events: EventData[];
+}
+
+interface EventData {
+  id: number;
+  name: string;
+  videogame: VideogameData;
+  sets: { nodes: SetData[] };
+}
+
+interface VideogameData {
+  id: number;
+  name: string;
+}
+
+interface SetData {
+  id: number;
+  winnerId: number | null;
+  slots: { entrant: EntrantData | null }[];
+}
+
+interface EntrantData {
+  id: number | null;
+  participants: ParticipantData[];
+}
+
+interface ParticipantData {
+  id: number;
+  player: { gamerTag: string };
+  user: { id: number; slug: string; images: { url: string }[] };
+}
+
+function createEntrantUpsert(entrant: EntrantData | null) {
+  if (!entrant?.participants[0]?.user?.slug) {
+    return null;
+  }
+  // TODO: account for doubles
+  if (entrant.participants.length > 1) {
+    return null;
+  }
+  const participant = entrant.participants[0]; // Assuming we use the first participant's data
+  return {
+    connectOrCreate: {
+      where: { id: participant?.user?.id },
+      create: {
+        id: participant?.user?.id,
+        name: participant?.player.gamerTag,
+        slug: participant?.user?.slug,
+        image: participant?.user?.images[0]?.url,
+      },
+    },
+  };
+}
+
+function createSetUpsert(set: SetData) {
+  if (typeof set?.id !== 'number') {
+    return null;
+  }
+  const winnerEntrant =
+    set.winnerId !== null
+      ? set.slots.find(slot => slot.entrant?.id === set.winnerId)?.entrant
+      : null;
+  const loserEntrant = set.slots
+    .filter(
+      slot => slot.entrant?.id !== set.winnerId && slot.entrant?.id !== null
+    )
+    .map(slot => slot.entrant!)[0];
+
+  const update: any = {};
+  const create: any = { id: set.id };
+
+  const winnerUpsert = winnerEntrant
+    ? createEntrantUpsert(winnerEntrant)
+    : null;
+  if (winnerUpsert) {
+    update.SetEntrantWinner = {
+      upsert: {
+        where: { setId: set.id },
+        create: { entrant: winnerUpsert },
+        update: { entrant: winnerUpsert },
+      },
+    };
+    create.SetEntrantWinner = {
+      create: { entrant: winnerUpsert },
+    };
+  }
+
+  const loserUpsert = loserEntrant ? createEntrantUpsert(loserEntrant) : null;
+  if (loserUpsert) {
+    update.SetEntrantLoser = {
+      upsert: {
+        where: { setId: set.id },
+        create: { entrant: loserUpsert },
+        update: { entrant: loserUpsert },
+      },
+    };
+    create.SetEntrantLoser = {
+      create: { entrant: loserUpsert },
+    };
+  }
+
+  // Only return the upsert object if there's something to update or create
+  if (Object.keys(update).length > 0 || Object.keys(create).length > 1) {
+    return {
+      where: { id: set.id },
+      update,
+      create,
+    };
+  }
+
+  return null;
+}
+
+function createEventUpsert(event: EventData) {
+  return {
+    where: { id: event.id },
+    update: {
+      name: event.name,
+      videogame: {
+        connectOrCreate: {
+          where: { id: event.videogame.id },
+          create: { id: event.videogame.id, name: event.videogame.name },
+        },
+      },
+      sets: {
+        upsert: event.sets.nodes
+          .map(createSetUpsert)
+          .filter(
+            setUpsert =>
+              !setUpsert ||
+              Object.keys(setUpsert.update).length > 0 ||
+              Object.keys(setUpsert.create).length > 1
+          ),
+      },
+    },
+    create: {
+      id: event.id,
+      name: event.name,
+      videogame: {
+        connectOrCreate: {
+          where: { id: event.videogame.id },
+          create: { id: event.videogame.id, name: event.videogame.name },
+        },
+      },
+      sets: {
+        create: event.sets.nodes
+          .map(createSetUpsert)
+          .filter(
+            setUpsert => !setUpsert || Object.keys(setUpsert.create).length > 1
+          )
+          .map(setUpsert => setUpsert.create),
+      },
+    },
+  };
+}
+
+export async function addTournamentToDb(tournamentData: TournamentData) {
+  const startAtDate = fromUnixTime(tournamentData.startAt).toISOString();
+
+  return await prisma.tournament.upsert({
     where: { id: tournamentData.id },
     update: {
-      id: tournamentData.id,
       name: tournamentData.name,
       slug: tournamentData.slug,
+      startAt: startAtDate,
       image: tournamentData.images[0]?.url,
-      startAt: fromUnixTime(tournamentData.startAt).toISOString(),
+      events: { upsert: tournamentData.events.map(createEventUpsert) },
     },
     create: {
       id: tournamentData.id,
-      slug: tournamentData.slug,
       name: tournamentData.name,
+      slug: tournamentData.slug,
       image: tournamentData.images[0]?.url,
-      startAt: fromUnixTime(tournamentData.startAt).toISOString(),
+      startAt: startAtDate,
+      events: {
+        create: tournamentData.events.map(
+          event => createEventUpsert(event).create
+        ),
+      },
     },
   });
-
-  console.log('tournament db response:', tournament);
-
-  await Promise.all(
-    tournamentData.events.map(async event => {
-      await prisma.videogame.upsert({
-        where: { id: event.videogame.id },
-        update: {
-          name: event.videogame.name,
-        },
-        create: {
-          id: event.videogame.id,
-          name: event.videogame.name,
-        },
-      });
-
-      const dbEvent = await prisma.event.upsert({
-        where: { id: event.id },
-        update: {
-          name: event.name,
-          tournamentId: tournamentData.id,
-          videogameId: event.videogame.id,
-        },
-        create: {
-          id: event.id,
-          name: event.name,
-          tournamentId: tournamentData.id,
-          videogameId: event.videogame.id,
-        },
-      });
-
-      console.log('dbEvent:', dbEvent);
-
-      await Promise.all(
-        event.sets.nodes.map(async set => {
-          if (!set.winnerId) {
-            return;
-          }
-          // Ignore teams for now
-          if (set.slots[0].entrant.participants.length > 1) {
-            return;
-          }
-
-          const winner = set.slots.find(
-            slot => slot.entrant.id === set.winnerId
-          ).entrant.participants[0];
-          const loser = set.slots.find(slot => slot.entrant.id !== set.winnerId)
-            .entrant.participants[0];
-
-          // Sometimes there's no user for some reason?
-          if (!winner?.user?.id || !loser?.user?.id) {
-            return;
-          }
-
-          await prisma.entrant.upsert({
-            where: { id: winner.user.id },
-            update: {
-              name: winner.player.gamerTag,
-              image: winner.user.images[0]?.url,
-            },
-            create: {
-              id: winner.user.id,
-              name: winner.player.gamerTag,
-              slug: winner.user.slug,
-              image: winner.user.images[0]?.url,
-            },
-          });
-
-          await prisma.entrant.upsert({
-            where: { id: loser.user.id },
-            update: {
-              name: loser.player.gamerTag,
-              image: loser.user.images[0]?.url,
-            },
-            create: {
-              id: loser.user.id,
-              name: loser.player.gamerTag,
-              slug: loser.user.slug,
-              image: loser.user.images[0]?.url,
-            },
-          });
-
-          await prisma.set.upsert({
-            where: { id: set.id },
-            update: {},
-            create: {
-              id: set.id,
-              eventId: event.id,
-              winnerId: winner.user.id,
-              loserId: loser.user.id,
-            },
-          });
-        })
-      );
-
-      return dbEvent;
-    })
-  );
-
-  return tournament;
-};
+}
 
 export const addTournament: MutationResolvers['addTournament'] = async (
   _parent,
   { input: { slug } }
 ) => {
+  const existingTournament = await prisma.tournament.findFirst({
+    where: { slug },
+  });
+  if (existingTournament) {
+    return {
+      ...existingTournament,
+      startAt: existingTournament.startAt.toISOString(),
+    };
+  }
   const tournamentData = await getStartGGTournamentForDb(slug);
-  console.log('slug:', slug);
-  console.log('tournamentData.name:', tournamentData.name);
-
   const tournament = await addTournamentToDb(tournamentData);
-  console.log('tournament:', tournament);
-
   return {
     ...tournament,
     startAt: tournament.startAt.toISOString(),

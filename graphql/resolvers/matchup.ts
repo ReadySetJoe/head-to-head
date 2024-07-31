@@ -1,43 +1,79 @@
 import { QueryResolvers } from '../../generated/resolvers-types';
 import prisma from '../../lib/prisma';
 
-type MatchupSetsQuery = {
-  winnerId: { in: number[] };
-  loserId: { in: number[] };
-  Event?: { videogameId?: number; Tournament?: { startAt: { gte: string } } };
-};
-
 export const getMatchup: QueryResolvers['getMatchup'] = async (
   _parent,
   { input: { entrantId1, entrantId2, startAfter, videogameId } }
 ) => {
-  const where: MatchupSetsQuery = {
-    winnerId: { in: [entrantId1, entrantId2] },
-    loserId: { in: [entrantId1, entrantId2] },
-  };
-
-  if (startAfter) {
-    Object.assign(where, {
+  const sets = await prisma.set.findMany({
+    where: {
       event: {
+        videogameId: videogameId,
         tournament: {
-          startAt: { gte: new Date(startAfter).toISOString() },
+          startAt: {
+            gte: startAfter,
+          },
         },
       },
+      OR: [
+        {
+          SetEntrantWinner: {
+            some: {
+              entrantId: entrantId1,
+            },
+          },
+          SetEntrantLoser: {
+            some: {
+              entrantId: entrantId2,
+            },
+          },
+        },
+        {
+          SetEntrantWinner: {
+            some: {
+              entrantId: entrantId2,
+            },
+          },
+          SetEntrantLoser: {
+            some: {
+              entrantId: entrantId1,
+            },
+          },
+        },
+      ],
+    },
+    include: {
+      SetEntrantWinner: true,
+      SetEntrantLoser: true,
+    },
+  });
+
+  let score1 = 0;
+  let score2 = 0;
+
+  sets.forEach(set => {
+    set.SetEntrantWinner.forEach(winner => {
+      if (winner.entrantId === entrantId1) score1++;
+      if (winner.entrantId === entrantId2) score2++;
     });
-  }
+  });
 
-  if (videogameId) {
-    Object.assign(where, { event: { videogameId } });
-  }
+  const entrant1 = await prisma.entrant.findUnique({
+    where: {
+      id: entrantId1,
+    },
+  });
 
-  const matches = await prisma.set.findMany({
-    where,
+  const entrant2 = await prisma.entrant.findUnique({
+    where: {
+      id: entrantId2,
+    },
   });
 
   return {
-    entrantId1: entrantId1,
-    entrantId2: entrantId2,
-    score1: matches.filter(match => match.winnerId === entrantId1).length,
-    score2: matches.filter(match => match.winnerId === entrantId2).length,
+    entrant1,
+    entrant2,
+    score1,
+    score2,
   };
 };

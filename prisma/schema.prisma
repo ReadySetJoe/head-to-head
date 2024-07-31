@@ -80,16 +80,32 @@ model Videogame {
 }
 
 model Set {
-  id       Int    @id
-  event    Event? @relation(fields: [eventId], references: [id])
-  eventId  Int?
-  winnerId Int
-  loserId  Int
+  id               Int                @id
+  event            Event?             @relation(fields: [eventId], references: [id])
+  eventId          Int?
+  SetEntrantWinner SetEntrantWinner[]
+  SetEntrantLoser  SetEntrantLoser[]
+}
+
+model SetEntrantWinner {
+  setId     Int     @id
+  entrantId Int
+  set       Set     @relation(fields: [setId], references: [id])
+  entrant   Entrant @relation(fields: [entrantId], references: [id])
+}
+
+model SetEntrantLoser {
+  setId     Int     @id
+  entrantId Int
+  set       Set     @relation(fields: [setId], references: [id])
+  entrant   Entrant @relation(fields: [entrantId], references: [id])
 }
 
 model Entrant {
-  id    Int     @id
-  name  String
-  slug  String
-  image String?
+  id               Int                @id
+  name             String
+  slug             String
+  image            String?
+  SetEntrantWinner SetEntrantWinner[]
+  SetEntrantLoser  SetEntrantLoser[]
 }
