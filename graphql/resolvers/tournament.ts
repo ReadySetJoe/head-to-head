@@ -67,8 +67,6 @@ function createEntrantUpsert(entrant: EntrantData | null) {
 }
 
 function createSetUpsert(set: SetData) {
-  console.log('Creating set upsert for set:', set.id);
-
   if (typeof set?.id !== 'number') {
     console.log('Invalid set id:', set?.id);
     return null;
@@ -121,7 +119,6 @@ function createSetUpsert(set: SetData) {
   }
 
   if (Object.keys(update).length > 0 || Object.keys(create).length > 1) {
-    console.log('Returning valid set upsert for set:', set.id);
     return {
       where: { id: set.id },
       update,
@@ -134,8 +131,6 @@ function createSetUpsert(set: SetData) {
 }
 
 function createEventUpsert(event: EventData) {
-  console.log('Creating event upsert for event:', event.id);
-
   const setUpserts = event.sets.nodes
     .map(set => {
       const setUpsert = createSetUpsert(set);
@@ -146,8 +141,6 @@ function createEventUpsert(event: EventData) {
       return setUpsert;
     })
     .filter(Boolean);
-
-  console.log(`Created ${setUpserts.length} valid set upserts`);
 
   return {
     where: { id: event.id },
@@ -248,6 +241,7 @@ export const getTournaments: QueryResolvers['getTournaments'] = async (
       slug: true,
       image: true,
     },
+    orderBy: { startAt: 'desc' },
   });
 
   return tournaments;

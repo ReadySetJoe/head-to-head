@@ -1,23 +1,36 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { Cancel } from '@mui/icons-material';
 import {
+  Autocomplete,
   Avatar,
   CircularProgress,
+  FormControlLabel,
   IconButton,
+  Radio,
+  RadioGroup,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
+import { subMonths, subWeeks, subYears } from 'date-fns';
 import { useState } from 'react';
 import {
   FetchStartGgUserDocument,
   GetMatchupBySlugsDocument,
+  GetVideogamesDocument,
 } from '../../generated/graphql';
 
 const getSlugFromUrl = (url: string) => {
   const splitUrl = url.split('/');
   return `${splitUrl[3]}/${splitUrl[4]}`;
 };
+
+const timeFilterOptions = [
+  { value: 'all', label: 'All time' },
+  { value: subYears(new Date(), 1).toISOString(), label: 'Last year' },
+  { value: subMonths(new Date(), 3).toISOString(), label: 'Last 3 months' },
+  { value: subWeeks(new Date(), 3).toISOString(), label: 'Last 3 weeks' },
+];
 
 const HeadToHead = () => {
   const [entrant1Url, setEntrant1Url] = useState('');
@@ -26,8 +39,12 @@ const HeadToHead = () => {
   const [entrant2Url, setEntrant2Url] = useState('');
   const [entrant2Name, setEntrant2Name] = useState('');
   const [entrant2Image, setEntrant2Image] = useState('');
+  const [videogameId, setVideogameId] = useState<number>(1);
+  const [timeFilter, setTimeFilter] = useState(timeFilterOptions[0].value);
 
   const [fetchStartGGUser] = useLazyQuery(FetchStartGgUserDocument);
+  const { data: videogamesData } = useQuery(GetVideogamesDocument);
+  const videogames = videogamesData?.getVideogames || [];
 
   const { data, loading } = useQuery(GetMatchupBySlugsDocument, {
     skip: !entrant1Name || !entrant2Name,
@@ -35,6 +52,8 @@ const HeadToHead = () => {
       input: {
         entrantSlug1: getSlugFromUrl(entrant1Url),
         entrantSlug2: getSlugFromUrl(entrant2Url),
+        startAfter: timeFilter === 'all' ? undefined : timeFilter,
+        videogameId,
       },
     },
   });
@@ -63,10 +82,6 @@ const HeadToHead = () => {
     <Stack spacing={4} flex={1} alignItems="center">
       <Typography variant="h4">quick-h2h</Typography>
       <Typography>Compare two players by their smash.gg URLs</Typography>
-      <Typography>
-        (Note: these will not be entered into the database, and will disappear
-        on refresh)
-      </Typography>
       <Stack
         direction={{ md: 'row' }}
         width="100%"
@@ -102,7 +117,7 @@ const HeadToHead = () => {
           />
           <Typography variant="h5">{entrant1Name || ' '}</Typography>
         </Stack>
-        <Typography variant="h3" p={4} fontWeight="bold">
+        <Typography variant="h3" px={2} pb={3} fontWeight="bold">
           vs
         </Typography>
         <Stack direction="column" alignItems="center" spacing={2} width="100%">
@@ -157,14 +172,12 @@ const HeadToHead = () => {
           />
         </Stack>
       )}
-      {/* <Autocomplete
+      <Autocomplete
         options={videogames}
         getOptionLabel={option => option.name}
         value={videogames.find(o => o.id === videogameId)}
         onChange={(_, value) => setVideogameId(value?.id)}
-        renderInput={params => (
-          <TextField {...params} label="Videogame (leave blank for all)" />
-        )}
+        renderInput={params => <TextField {...params} label="Videogame" />}
         fullWidth
       />
       <RadioGroup
@@ -179,7 +192,11 @@ const HeadToHead = () => {
             label={option.label}
           />
         ))}
-      </RadioGroup> */}
+      </RadioGroup>
+      <Typography>
+        Note: These will not be entered into the database, and will disappear on
+        refresh.
+      </Typography>
     </Stack>
   );
 };

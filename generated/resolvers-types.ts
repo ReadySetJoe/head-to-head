@@ -44,6 +44,8 @@ export type Event = {
 export type GetMatchupBySlugsInput = {
   entrantSlug1: Scalars['String']['input'];
   entrantSlug2: Scalars['String']['input'];
+  startAfter?: InputMaybe<Scalars['String']['input']>;
+  videogameId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type GetMatchupInput = {

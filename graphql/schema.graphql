@@ -52,6 +52,8 @@ input GetMatchupInput {
 input GetMatchupBySlugsInput {
   entrantSlug1: String!
   entrantSlug2: String!
+  startAfter: String
+  videogameId: Int
 }
 
 type Query {

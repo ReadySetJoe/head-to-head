@@ -130,7 +130,7 @@ const AddPlayerPage: React.FC = () => {
           {processing && (
             <LinearProgress
               variant="determinate"
-              value={(numCompleted / totalTournaments) * 100}
+              value={(numCompleted / totalTournaments) * 100 + 0.01}
             />
           )}
           <Typography>

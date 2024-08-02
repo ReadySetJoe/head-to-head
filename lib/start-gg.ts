@@ -1,4 +1,5 @@
 import axois from 'axios';
+import { fromUnixTime } from 'date-fns';
 
 const headers = {
   Authorization: `Bearer ${process.env.START_GG_API_KEY}`,
@@ -274,7 +275,9 @@ export const getStartGGUser = async (slug: string) => {
 
 export const getStartGGMatchupBySlugs = async (
   slug1: string,
-  slug2: string
+  slug2: string,
+  startAfter: string,
+  videogameId: number
 ) => {
   const playersBody = JSON.stringify({
     query: `
@@ -324,6 +327,9 @@ export const getStartGGMatchupBySlugs = async (
                   videogame {
                     id
                   }
+                  tournament {
+                    startAt
+                  }
                 }
                 winnerId
                 slots {
@@ -361,8 +367,14 @@ export const getStartGGMatchupBySlugs = async (
         return;
       }
 
-      // TODO: only melee for now :(
-      if (set.event.videogame.id !== 1) {
+      if (videogameId && set.event.videogame.id !== videogameId) {
+        return;
+      }
+
+      if (
+        startAfter &&
+        fromUnixTime(set.event.tournament.startAt).toISOString() < startAfter
+      ) {
         return;
       }
       const slot1PlayerId = set.slots[0].entrant.participants[0].player.id;

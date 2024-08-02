@@ -87,7 +87,9 @@ const HeadToHead = () => {
         alignItems="center"
       >
         <EntrantAutocomplete entrants={entrants} otherId={id2} setId={setId1} />
-        <Typography variant="h4">vs</Typography>
+        <Typography variant="h3" p={2} fontWeight="bold">
+          vs
+        </Typography>
         <EntrantAutocomplete entrants={entrants} otherId={id1} setId={setId2} />
       </Stack>
       {loading && <CircularProgress />}
@@ -135,6 +137,10 @@ const HeadToHead = () => {
           />
         ))}
       </RadioGroup>
+      <Typography maxWidth="600px" variant="body2">
+        Note: This only includes matches from tournaments that have been
+        imported. Use the +Tournament or +Player tabs to add more data.
+      </Typography>
     </Stack>
   );
 };

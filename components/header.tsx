@@ -57,7 +57,7 @@ const Header = () => {
         letterSpacing: '.3rem',
       }}
     >
-      head2head
+      whoisbetter.me
     </Typography>
   );
 

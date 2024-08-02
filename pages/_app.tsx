@@ -36,7 +36,7 @@ export default function App({
   return (
     <ApolloProvider client={client}>
       <Head>
-        <title>head2head</title>
+        <title>whoisbetter.me</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SessionProvider session={session}>

@@ -81,11 +81,13 @@ export const getMatchup: QueryResolvers['getMatchup'] = async (
 
 export const getMatchupBySlugs: QueryResolvers['getMatchupBySlugs'] = async (
   _parent,
-  { input: { entrantSlug1, entrantSlug2 } }
+  { input: { entrantSlug1, entrantSlug2, startAfter, videogameId } }
 ) => {
   const { player1Wins, player2Wins } = await getStartGGMatchupBySlugs(
     entrantSlug1,
-    entrantSlug2
+    entrantSlug2,
+    startAfter,
+    videogameId
   );
 
   return {
