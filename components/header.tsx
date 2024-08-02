@@ -25,8 +25,8 @@ const Header = () => {
 
   const navLinks = [
     {
-      label: 'h2h',
-      href: '/head-to-head',
+      label: 'quick-h2h',
+      href: '/head-to-head/by-url',
     },
     {
       label: '+tournament',
@@ -37,8 +37,8 @@ const Header = () => {
       href: '/player/add',
     },
     {
-      label: 'quick-h2h',
-      href: '/head-to-head/by-url',
+      label: 'db-h2h',
+      href: '/head-to-head',
     },
   ];
 

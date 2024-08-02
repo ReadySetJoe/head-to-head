@@ -30,7 +30,6 @@ const Export = () => {
       },
     });
     const matchups = data?.getMatchupSpread || [];
-    console.log('matchups', matchups);
 
     const entrantNames = selectedEntrants.map(e => e.name);
     const headers = [''].concat(entrantNames);
@@ -84,8 +83,6 @@ const Export = () => {
         </Stack>
       ))}
       <EntrantAutocomplete
-        entrants={entrants}
-        otherIds={selectedEntrants.map(e => e.id) || []}
         setId={id => {
           if (id) {
             setSelectedEntrants([

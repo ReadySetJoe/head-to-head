@@ -14,8 +14,8 @@ const Landing = () => {
         various tournaments.
       </Typography>
       <Stack direction={{ md: 'row' }} spacing={{ xs: 2 }} width="100%">
-        <Button variant="contained" href="/head-to-head">
-          Head to head
+        <Button variant="contained" href="/head-to-head/by-url">
+          Quick h2h by start.gg URL
         </Button>
         <Button variant="contained" href="/tournament/add">
           Add a tournament
@@ -23,8 +23,8 @@ const Landing = () => {
         <Button variant="contained" href="/player/add">
           Add a player
         </Button>
-        <Button variant="contained" href="/head-to-head/by-url">
-          Quick check by URL
+        <Button variant="contained" href="/head-to-head">
+          Full h2h (WIP)
         </Button>
       </Stack>
       <Typography variant="h4">Existing tournaments:</Typography>

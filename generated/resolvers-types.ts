@@ -106,6 +106,11 @@ export type QueryFetchStartGgUserArgs = {
 };
 
 
+export type QueryGetEntrantsArgs = {
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QueryGetMatchupArgs = {
   input: GetMatchupInput;
 };
@@ -276,7 +281,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   fetchStartGGTournament?: Resolver<Maybe<ResolversTypes['Tournament']>, ParentType, ContextType, RequireFields<QueryFetchStartGgTournamentArgs, 'slug'>>;
   fetchStartGGUser?: Resolver<Maybe<ResolversTypes['Entrant']>, ParentType, ContextType, RequireFields<QueryFetchStartGgUserArgs, 'slug'>>;
-  getEntrants?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entrant']>>>, ParentType, ContextType>;
+  getEntrants?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entrant']>>>, ParentType, ContextType, Partial<QueryGetEntrantsArgs>>;
   getMatchup?: Resolver<Maybe<ResolversTypes['Matchup']>, ParentType, ContextType, RequireFields<QueryGetMatchupArgs, 'input'>>;
   getMatchupBySlugs?: Resolver<Maybe<ResolversTypes['Matchup']>, ParentType, ContextType, Partial<QueryGetMatchupBySlugsArgs>>;
   getMatchupSpread?: Resolver<Maybe<Array<Maybe<ResolversTypes['Matchup']>>>, ParentType, ContextType, RequireFields<QueryGetMatchupSpreadArgs, 'input'>>;

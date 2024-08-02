@@ -177,7 +177,12 @@ const HeadToHead = () => {
         getOptionLabel={option => option.name}
         value={videogames.find(o => o.id === videogameId)}
         onChange={(_, value) => setVideogameId(value?.id)}
-        renderInput={params => <TextField {...params} label="Videogame" />}
+        renderInput={params => (
+          <TextField
+            {...params}
+            label="Videogame (leave blank for Super Smash Bros. Melee)"
+          />
+        )}
         fullWidth
       />
       <RadioGroup

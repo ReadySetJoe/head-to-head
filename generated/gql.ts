@@ -17,7 +17,7 @@ const documents = {
     "mutation AddTournament($input: AddTournamentInput!) {\n  addTournament(input: $input) {\n    id\n  }\n}": types.AddTournamentDocument,
     "query FetchStartGGTournament($slug: String!) {\n  fetchStartGGTournament(slug: $slug) {\n    id\n    name\n    slug\n    image\n    startAt\n    events {\n      id\n      name\n      image\n    }\n  }\n}": types.FetchStartGgTournamentDocument,
     "query FetchStartGGUser($slug: String!) {\n  fetchStartGGUser(slug: $slug) {\n    id\n    name\n    slug\n    image\n    tournaments {\n      id\n      name\n      slug\n    }\n  }\n}": types.FetchStartGgUserDocument,
-    "query GetEntrants {\n  getEntrants {\n    id\n    name\n    image\n    slug\n  }\n}": types.GetEntrantsDocument,
+    "query GetEntrants($search: String) {\n  getEntrants(search: $search) {\n    id\n    name\n    image\n    slug\n  }\n}": types.GetEntrantsDocument,
     "query GetMatchupBySlugs($input: GetMatchupBySlugsInput!) {\n  getMatchupBySlugs(input: $input) {\n    score1\n    score2\n  }\n}": types.GetMatchupBySlugsDocument,
     "query GetMatchupSpread($input: GetMatchupSpreadInput!) {\n  getMatchupSpread(input: $input) {\n    entrant1 {\n      id\n      name\n    }\n    entrant2 {\n      id\n      name\n    }\n    score1\n    score2\n  }\n}": types.GetMatchupSpreadDocument,
     "query GetMatchup($input: GetMatchupInput!) {\n  getMatchup(input: $input) {\n    score1\n    score2\n  }\n}": types.GetMatchupDocument,
@@ -58,7 +58,7 @@ export function graphql(source: "query FetchStartGGUser($slug: String!) {\n  fet
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query GetEntrants {\n  getEntrants {\n    id\n    name\n    image\n    slug\n  }\n}"): (typeof documents)["query GetEntrants {\n  getEntrants {\n    id\n    name\n    image\n    slug\n  }\n}"];
+export function graphql(source: "query GetEntrants($search: String) {\n  getEntrants(search: $search) {\n    id\n    name\n    image\n    slug\n  }\n}"): (typeof documents)["query GetEntrants($search: String) {\n  getEntrants(search: $search) {\n    id\n    name\n    image\n    slug\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

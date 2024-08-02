@@ -1,5 +1,5 @@
-query GetEntrants {
-  getEntrants {
+query GetEntrants($search: String) {
+  getEntrants(search: $search) {
     id
     name
     image

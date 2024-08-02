@@ -15,7 +15,6 @@ import { subMonths, subWeeks, subYears } from 'date-fns';
 import { useState } from 'react';
 import {
   GetEntrantsDocument,
-  GetEntrantsQuery,
   GetMatchupDocument,
   GetVideogamesDocument,
 } from '../../generated/graphql';
@@ -28,17 +27,20 @@ const timeFilterOptions = [
 ];
 
 export const EntrantAutocomplete = ({
-  entrants,
-  otherIds,
   setId,
 }: {
-  entrants: GetEntrantsQuery['getEntrants'];
-  otherIds: number[];
   setId: (id: number) => void;
 }) => {
+  const [search, setSearch] = useState('');
+  const { data: getEntrantsData } = useQuery(GetEntrantsDocument, {
+    skip: search?.length < 2,
+    variables: { search },
+  });
+  const entrants = getEntrantsData?.getEntrants || [];
+
   return (
     <Autocomplete
-      options={entrants.filter(o => !otherIds.includes(o.id))}
+      options={entrants}
       getOptionLabel={option => option.name}
       renderOption={(props, option) => (
         <Box key={option.id} component="li" {...props}>
@@ -49,6 +51,9 @@ export const EntrantAutocomplete = ({
         </Box>
       )}
       onChange={(_, value) => setId(value?.id)}
+      onInputChange={(_, value) => {
+        setSearch(value);
+      }}
       renderInput={params => <TextField {...params} />}
       fullWidth
     />
@@ -58,11 +63,13 @@ export const EntrantAutocomplete = ({
 const HeadToHead = () => {
   const [id1, setId1] = useState<number>();
   const [id2, setId2] = useState<number>();
-  const [videogameId, setVideogameId] = useState<number>();
+  const [videogameId, setVideogameId] = useState<number>(1);
   const [timeFilter, setTimeFilter] = useState(timeFilterOptions[0].value);
 
-  const { data: entrantsData } = useQuery(GetEntrantsDocument);
-  const entrants = entrantsData?.getEntrants || [];
+  // this is a lazy way of getting all entrants just for their images
+  // TODO: unlazy this
+  const { data: allEntrantsData } = useQuery(GetEntrantsDocument);
+  const entrants = allEntrantsData?.getEntrants || [];
   const { data: videogamesData } = useQuery(GetVideogamesDocument);
   const videogames = videogamesData?.getVideogames || [];
   const { data: matchupData, loading } = useQuery(GetMatchupDocument, {
@@ -80,25 +87,22 @@ const HeadToHead = () => {
   return (
     <Stack spacing={4} flex={1} alignItems="center">
       <Typography variant="h4">Head to head</Typography>
+      <Typography>
+        Note: This is still a work in progress, and requires both players to
+        have been entered into the database.
+      </Typography>
+      <Typography>For quick comparisons use the quick-h2h tab.</Typography>
       <Stack
         direction={{ md: 'row' }}
         width="100%"
         spacing={4}
         alignItems="center"
       >
-        <EntrantAutocomplete
-          entrants={entrants}
-          otherIds={[id2]}
-          setId={setId1}
-        />
+        <EntrantAutocomplete setId={setId1} />
         <Typography variant="h3" p={2} fontWeight="bold">
           vs
         </Typography>
-        <EntrantAutocomplete
-          entrants={entrants}
-          otherIds={[id1]}
-          setId={setId2}
-        />
+        <EntrantAutocomplete setId={setId2} />
       </Stack>
       {loading && <CircularProgress />}
       {matchupData && (
@@ -128,7 +132,10 @@ const HeadToHead = () => {
         value={videogames.find(o => o.id === videogameId)}
         onChange={(_, value) => setVideogameId(value?.id)}
         renderInput={params => (
-          <TextField {...params} label="Videogame (leave blank for all)" />
+          <TextField
+            {...params}
+            label="Videogame (leave blank for Super Smash Bros. Melee)"
+          />
         )}
         fullWidth
       />

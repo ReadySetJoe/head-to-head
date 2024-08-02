@@ -9,9 +9,17 @@ const headers = {
 
 export const getEntrants: QueryResolvers['getEntrants'] = async (
   _parent,
-  _args
+  { search }
 ) => {
-  return prisma.entrant.findMany({ orderBy: { name: 'asc' } });
+  return prisma.entrant.findMany({
+    where: {
+      name: {
+        contains: search,
+        mode: 'insensitive',
+      },
+    },
+    orderBy: { name: 'asc' },
+  });
 };
 
 export const addEntrant: QueryResolvers['addEntrant'] = async (

@@ -63,7 +63,7 @@ input GetMatchupSpreadInput {
 type Query {
   fetchStartGGTournament(slug: String!): Tournament
   fetchStartGGUser(slug: String!): Entrant
-  getEntrants: [Entrant]
+  getEntrants(search: String): [Entrant]
   getMatchup(input: GetMatchupInput!): Matchup
   getMatchupBySlugs(input: GetMatchupBySlugsInput): Matchup
   getMatchupSpread(input: GetMatchupSpreadInput!): [Matchup]
