@@ -40,6 +40,10 @@ const Header = () => {
       label: '+Player',
       href: '/player/add',
     },
+    {
+      label: 'quick-h2h',
+      href: '/head-to-head/by-url',
+    },
   ];
 
   const logo = (

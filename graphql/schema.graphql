@@ -49,11 +49,17 @@ input GetMatchupInput {
   videogameId: Int
 }
 
+input GetMatchupBySlugsInput {
+  entrantSlug1: String!
+  entrantSlug2: String!
+}
+
 type Query {
   fetchStartGGTournament(slug: String!): Tournament
   fetchStartGGUser(slug: String!): Entrant
   getEntrants: [Entrant]
   getMatchup(input: GetMatchupInput!): Matchup
+  getMatchupBySlugs(input: GetMatchupBySlugsInput): Matchup
   getTournaments: [Tournament]
   getVideogames: [Videogame]
 }

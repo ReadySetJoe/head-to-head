@@ -1,6 +1,6 @@
 import { Resolvers } from '../../generated/resolvers-types';
 import { addEntrant, getEntrants } from './entrant';
-import { getMatchup } from './matchup';
+import { getMatchup, getMatchupBySlugs } from './matchup';
 import { fetchStartGGTournament, fetchStartGGUser } from './start-gg';
 import { addTournament, getTournaments } from './tournament';
 import { getVideogames } from './videogame';
@@ -11,6 +11,7 @@ const resolvers: Resolvers = {
     fetchStartGGUser,
     getEntrants,
     getMatchup,
+    getMatchupBySlugs,
     getTournaments,
     getVideogames,
   },

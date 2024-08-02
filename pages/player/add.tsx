@@ -31,7 +31,6 @@ const AddPlayerPage: React.FC = () => {
     setNewEntrantUrl(e.target.value);
 
     const splitUrl = e.target.value.split('/');
-    console.log('splitUrl', splitUrl);
     const slug = splitUrl[4];
 
     const res = await fetchStartGGUser({

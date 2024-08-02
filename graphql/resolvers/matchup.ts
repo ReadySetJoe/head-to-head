@@ -1,5 +1,6 @@
 import { QueryResolvers } from '../../generated/resolvers-types';
 import prisma from '../../lib/prisma';
+import { getStartGGMatchupBySlugs } from '../../lib/start-gg';
 
 export const getMatchup: QueryResolvers['getMatchup'] = async (
   _parent,
@@ -75,5 +76,20 @@ export const getMatchup: QueryResolvers['getMatchup'] = async (
     entrant2,
     score1,
     score2,
+  };
+};
+
+export const getMatchupBySlugs: QueryResolvers['getMatchupBySlugs'] = async (
+  _parent,
+  { input: { entrantSlug1, entrantSlug2 } }
+) => {
+  const { player1Wins, player2Wins } = await getStartGGMatchupBySlugs(
+    entrantSlug1,
+    entrantSlug2
+  );
+
+  return {
+    score1: player1Wins.length,
+    score2: player2Wins.length,
   };
 };

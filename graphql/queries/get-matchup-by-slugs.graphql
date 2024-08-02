@@ -1,0 +1,6 @@
+query GetMatchupBySlugs($input: GetMatchupBySlugsInput!) {
+  getMatchupBySlugs(input: $input) {
+    score1
+    score2
+  }
+}
