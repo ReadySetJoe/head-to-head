@@ -55,6 +55,10 @@ export type GetMatchupInput = {
   videogameId?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type GetMatchupSpreadInput = {
+  entrantSlugs: Array<Scalars['String']['input']>;
+};
+
 export type Matchup = {
   __typename?: 'Matchup';
   entrant1?: Maybe<Entrant>;
@@ -86,6 +90,7 @@ export type Query = {
   getEntrants?: Maybe<Array<Maybe<Entrant>>>;
   getMatchup?: Maybe<Matchup>;
   getMatchupBySlugs?: Maybe<Matchup>;
+  getMatchupSpread?: Maybe<Array<Maybe<Matchup>>>;
   getTournaments?: Maybe<Array<Maybe<Tournament>>>;
   getVideogames?: Maybe<Array<Maybe<Videogame>>>;
 };
@@ -108,6 +113,11 @@ export type QueryGetMatchupArgs = {
 
 export type QueryGetMatchupBySlugsArgs = {
   input?: InputMaybe<GetMatchupBySlugsInput>;
+};
+
+
+export type QueryGetMatchupSpreadArgs = {
+  input: GetMatchupSpreadInput;
 };
 
 export type Tournament = {
@@ -205,6 +215,7 @@ export type ResolversTypes = ResolversObject<{
   Event: ResolverTypeWrapper<Event>;
   GetMatchupBySlugsInput: GetMatchupBySlugsInput;
   GetMatchupInput: GetMatchupInput;
+  GetMatchupSpreadInput: GetMatchupSpreadInput;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Matchup: ResolverTypeWrapper<Matchup>;
   Mutation: ResolverTypeWrapper<{}>;
@@ -223,6 +234,7 @@ export type ResolversParentTypes = ResolversObject<{
   Event: Event;
   GetMatchupBySlugsInput: GetMatchupBySlugsInput;
   GetMatchupInput: GetMatchupInput;
+  GetMatchupSpreadInput: GetMatchupSpreadInput;
   Int: Scalars['Int']['output'];
   Matchup: Matchup;
   Mutation: {};
@@ -267,6 +279,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getEntrants?: Resolver<Maybe<Array<Maybe<ResolversTypes['Entrant']>>>, ParentType, ContextType>;
   getMatchup?: Resolver<Maybe<ResolversTypes['Matchup']>, ParentType, ContextType, RequireFields<QueryGetMatchupArgs, 'input'>>;
   getMatchupBySlugs?: Resolver<Maybe<ResolversTypes['Matchup']>, ParentType, ContextType, Partial<QueryGetMatchupBySlugsArgs>>;
+  getMatchupSpread?: Resolver<Maybe<Array<Maybe<ResolversTypes['Matchup']>>>, ParentType, ContextType, RequireFields<QueryGetMatchupSpreadArgs, 'input'>>;
   getTournaments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tournament']>>>, ParentType, ContextType>;
   getVideogames?: Resolver<Maybe<Array<Maybe<ResolversTypes['Videogame']>>>, ParentType, ContextType>;
 }>;

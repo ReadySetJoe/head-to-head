@@ -1,0 +1,14 @@
+query GetMatchupSpread($input: GetMatchupSpreadInput!) {
+  getMatchupSpread(input: $input) {
+    entrant1 {
+      id
+      name
+    }
+    entrant2 {
+      id
+      name
+    }
+    score1
+    score2
+  }
+}

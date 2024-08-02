@@ -3,5 +3,6 @@ query GetEntrants {
     id
     name
     image
+    slug
   }
 }

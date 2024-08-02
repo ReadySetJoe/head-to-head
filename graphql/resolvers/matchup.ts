@@ -1,6 +1,7 @@
+import { Matchup } from '../../generated/graphql';
 import { QueryResolvers } from '../../generated/resolvers-types';
 import prisma from '../../lib/prisma';
-import { getStartGGMatchupBySlugs } from '../../lib/start-gg';
+import { getStartGGMatchupBySlugs, getStartGGUser } from '../../lib/start-gg';
 
 export const getMatchup: QueryResolvers['getMatchup'] = async (
   _parent,
@@ -94,4 +95,40 @@ export const getMatchupBySlugs: QueryResolvers['getMatchupBySlugs'] = async (
     score1: player1Wins.length,
     score2: player2Wins.length,
   };
+};
+
+export const getMatchupSpread: QueryResolvers['getMatchupSpread'] = async (
+  _parent,
+  { input: { entrantSlugs } }
+) => {
+  const matchups: Matchup[] = [];
+  for (let i = 0; i < entrantSlugs.length; i++) {
+    for (let j = i + 1; j < entrantSlugs.length; j++) {
+      if (i === j) continue;
+      const entrantSlug1 = entrantSlugs[i];
+      const entrantSlug2 = entrantSlugs[j];
+      const entrant1 = await getStartGGUser(entrantSlug1);
+      const entrant2 = await getStartGGUser(entrantSlug2);
+      const matchup = await getStartGGMatchupBySlugs(
+        entrantSlug1,
+        entrantSlug2
+      );
+      console.log('matchup', matchup);
+      matchups.push({
+        entrant1: {
+          id: entrant1.id,
+          name: entrant1.player.gamerTag,
+          slug: entrantSlug1,
+        },
+        entrant2: {
+          id: entrant2.id,
+          name: entrant2.player.gamerTag,
+          slug: entrantSlug2,
+        },
+        score1: matchup.player1Wins.length,
+        score2: matchup.player2Wins.length,
+      });
+    }
+  }
+  return matchups;
 };

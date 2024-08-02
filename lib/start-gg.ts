@@ -276,8 +276,8 @@ export const getStartGGUser = async (slug: string) => {
 export const getStartGGMatchupBySlugs = async (
   slug1: string,
   slug2: string,
-  startAfter: string,
-  videogameId: number
+  startAfter?: string,
+  videogameId?: number
 ) => {
   const playersBody = JSON.stringify({
     query: `

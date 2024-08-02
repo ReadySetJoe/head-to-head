@@ -38,7 +38,7 @@ export const EntrantAutocomplete = ({
 }) => {
   return (
     <Autocomplete
-      options={entrants.filter(o => otherIds.includes(o.id))}
+      options={entrants.filter(o => !otherIds.includes(o.id))}
       getOptionLabel={option => option.name}
       renderOption={(props, option) => (
         <Box key={option.id} component="li" {...props}>
