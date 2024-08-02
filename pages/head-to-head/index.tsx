@@ -27,18 +27,18 @@ const timeFilterOptions = [
   { value: subWeeks(new Date(), 3).toISOString(), label: 'Last 3 weeks' },
 ];
 
-const EntrantAutocomplete = ({
+export const EntrantAutocomplete = ({
   entrants,
-  otherId,
+  otherIds,
   setId,
 }: {
   entrants: GetEntrantsQuery['getEntrants'];
-  otherId: number;
+  otherIds: number[];
   setId: (id: number) => void;
 }) => {
   return (
     <Autocomplete
-      options={entrants.filter(o => o.id !== otherId)}
+      options={entrants.filter(o => otherIds.includes(o.id))}
       getOptionLabel={option => option.name}
       renderOption={(props, option) => (
         <Box key={option.id} component="li" {...props}>
@@ -86,11 +86,19 @@ const HeadToHead = () => {
         spacing={4}
         alignItems="center"
       >
-        <EntrantAutocomplete entrants={entrants} otherId={id2} setId={setId1} />
+        <EntrantAutocomplete
+          entrants={entrants}
+          otherIds={[id2]}
+          setId={setId1}
+        />
         <Typography variant="h3" p={2} fontWeight="bold">
           vs
         </Typography>
-        <EntrantAutocomplete entrants={entrants} otherId={id1} setId={setId2} />
+        <EntrantAutocomplete
+          entrants={entrants}
+          otherIds={[id1]}
+          setId={setId2}
+        />
       </Stack>
       {loading && <CircularProgress />}
       {matchupData && (

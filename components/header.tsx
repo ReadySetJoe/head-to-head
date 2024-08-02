@@ -25,19 +25,15 @@ const Header = () => {
 
   const navLinks = [
     {
-      label: 'Home',
-      href: '/',
-    },
-    {
-      label: 'head2head',
+      label: 'h2h',
       href: '/head-to-head',
     },
     {
-      label: '+Tournament',
+      label: '+tournament',
       href: '/tournament/add',
     },
     {
-      label: '+Player',
+      label: '+player',
       href: '/player/add',
     },
     {
@@ -127,6 +123,7 @@ const Header = () => {
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: '#000000',
+        position: 'relative',
       }}
     >
       <Box sx={{ flexGrow: 0, display: { md: 'flex', xs: 'none' } }}>
@@ -135,7 +132,16 @@ const Header = () => {
       <Box sx={{ flexGrow: 0, display: { md: 'none', xs: 'flex' } }}>
         {mobileNav}
       </Box>
-      <Box sx={{ flexGrow: 0, display: { md: 'flex', xs: 'none' } }}>
+      <Box
+        sx={{
+          flexGrow: 0,
+          display: { md: 'flex', xs: 'none' },
+          position: 'absolute',
+          textAlign: 'center',
+          left: '50%',
+          transform: 'translateX(-50%)',
+        }}
+      >
         {desktopNav}
       </Box>
       <Box sx={{ flexGrow: 0, display: { md: 'none', xs: 'flex' } }}>
