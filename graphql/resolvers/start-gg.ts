@@ -24,7 +24,9 @@ export const fetchStartGGUser: QueryResolvers['fetchStartGGUser'] = async (
   _parent,
   { slug }
 ) => {
+  console.log('made it here 1');
   const user = await getStartGGUser(slug);
+  console.log('user', user);
 
   return {
     id: user.id,

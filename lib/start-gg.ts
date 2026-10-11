@@ -266,11 +266,17 @@ export const getStartGGUser = async (slug: string) => {
     variables: { slug },
   });
 
-  const res = (await axois.post('https://api.smash.gg/gql/alpha', userBody, {
-    headers,
-  })) as StartGGUserQueryResponse;
+  console.log('made it here 2');
+  try {
+    const res = (await axois.post('https://api.smash.gg/gql/alpha', userBody, {
+      headers,
+    })) as StartGGUserQueryResponse;
 
-  return res.data.data.user;
+    console.log('res', res);
+    return res.data.data.user;
+  } catch (error) {
+    console.log('error: ', error);
+  }
 };
 
 export const getStartGGMatchupBySlugs = async (
@@ -363,7 +369,7 @@ export const getStartGGMatchupBySlugs = async (
 
     nodes.forEach(set => {
       // TODO: ignore doubles for now
-      if (set.slots[0].entrant.participants.length > 1) {
+      if (set.slots[0]?.entrant?.participants.length > 1) {
         return;
       }
 
@@ -374,6 +380,13 @@ export const getStartGGMatchupBySlugs = async (
       if (
         startAfter &&
         fromUnixTime(set.event.tournament.startAt).toISOString() < startAfter
+      ) {
+        return;
+      }
+
+      if (
+        !set.slots[0].entrant?.participants[0]?.player ||
+        !set.slots[1].entrant?.participants[0]?.player
       ) {
         return;
       }

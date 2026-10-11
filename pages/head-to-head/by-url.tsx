@@ -72,7 +72,9 @@ const HeadToHead = () => {
     });
 
     if (res.data) {
-      const { name, image } = res.data.fetchStartGGUser;
+      // const { name, image } = res?.data?.fetchStartGGUser;
+      const name = res?.data?.fetchStartGGUser?.name;
+      const image = res?.data?.fetchStartGGUser?.image;
       setEntrantName(name);
       setEntrantImage(image);
     }
